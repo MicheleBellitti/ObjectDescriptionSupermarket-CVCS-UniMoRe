@@ -1,0 +1,8 @@
+./Datasets
+./yolov5
+./train_results
+./logs
+./vscode
+./*.pth
+./*.log
+./session_name.txt

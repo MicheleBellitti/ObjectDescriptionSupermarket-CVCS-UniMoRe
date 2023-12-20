@@ -1,0 +1,34 @@
+# Training settings
+
+epochs: 200
+lr: 0.0078
+eps: 1e-16
+weight_decay: 0.0005
+momentum: 0.9
+gamma: 0.1
+batch_size: 12
+print_freq: 50
+
+# Model settings
+model:
+  ssd:
+    checkpoint_path: "./checkpoints/ssd/checkpoint.pth"
+  frcnn:
+    checkpoint_path: "./checkpoints/frcnn/checkpoint.pth"
+  CustomRetinaNet:
+    checkpoint_path: "./checkpoints/retinanet/checkpoint.pth"
+
+# Logging and saving settings
+logging:
+  tensorboard_log_dir: "./logs"
+  save_model_dir: "./saved_model"
+  save_frequency: 1 # Save model every 'n' epochs
+
+# Hardware settings
+
+device: "cuda" # or "cpu"
+num_workers: 2
+
+confidence_threshold: 0.51
+nms_threshold: 0.7
+num_classes: 2
