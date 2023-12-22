@@ -26,13 +26,10 @@ class CustomRetinaNet(RetinaNet):
         # Load a pre-trained backbone model, e.g., ResNet50
         backbone = resnet_fpn_backbone('resnet50', pretrained=pretrained_backbone)
         
-        anchor_generator = AnchorGenerator(
-        sizes=((32, 64, 128, 256, 512),),
-        aspect_ratios=((0.5, 1.0, 2.0),)
-        )
+        # anchor_generator = AnchorGenerator(sizes=((32, 64, 128, 256, 512),),aspect_ratios=((0.5, 1.0, 2.0),))
         
         # Initialize the RetinaNet model with the FPN backbone
-        super(CustomRetinaNet, self).__init__(backbone=backbone, num_classes=num_classes, anchor_generator=anchor_generator)
+        super(CustomRetinaNet, self).__init__(backbone=backbone, num_classes=num_classes)
 
         # Access the in_channels for the classification head
         # This part needs to be adjusted based on the actual structure of the FPN-based RetinaNet
