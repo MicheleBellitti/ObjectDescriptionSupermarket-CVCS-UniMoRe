@@ -1,11 +1,13 @@
 #!/bin/bash
 #SBATCH --partition=all_usr_prod
-#SBATCH --time=12:00:00
+#SBATCH --time=18:00:00
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=4   # Number of tasks (GPUs) per node
 #SBATCH --nodes=1             # Number of nodes requested
 #SBATCH --output=./logs/frcnn_%j.out
 #SBATCH --error=./logs/frcnn_%j.err
+#SBATCH --mail-user=319399@studenti.unimore.it
+#SBATCH --mail-type=ALL
 
 TARGET_EPOCHS=5
 

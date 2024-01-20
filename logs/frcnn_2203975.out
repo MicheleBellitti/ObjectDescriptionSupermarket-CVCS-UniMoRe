@@ -1,0 +1,184 @@
+device: cuda
+device: cuda
+device: cuda
+device: cuda
+Training Epoch: 0 [116/117] Loss: 1.8635 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 0 [116/117] Loss: 1.9033 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 0 [116/117] Loss: 1.8016 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 0 [116/117] Loss: 1.8296 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 0 [6/7] Loss: 2.0878 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 0 [6/7] Loss: 2.0937 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 0 [6/7] Loss: 2.0719 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 0 [6/7] Loss: 2.2390 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 1 [116/117] Loss: 1.8371 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 1 [116/117] Loss: 1.7715 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 1 [116/117] Loss: 1.9834 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 1 [116/117] Loss: 1.7771 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 1 [6/7] Loss: 2.0790 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 1 [6/7] Loss: 2.0535 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 1 [6/7] Loss: 2.1129 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 1 [6/7] Loss: 2.0723 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 2 [116/117] Loss: 1.9758 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 2 [116/117] Loss: 1.7331 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 2 [116/117] Loss: 1.9670 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00Training Epoch: 2 [116/117] Loss: 1.9026 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 2 [6/7] Loss: 2.1588 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 2 [6/7] Loss: 2.0948 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 2 [6/7] Loss: 2.0166 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 2 [6/7] Loss: 2.0145 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 3 [116/117] Loss: 1.8738 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 3 [116/117] Loss: 1.9496 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 3 [116/117] Loss: 1.7851 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 3 [116/117] Loss: 1.8736 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 3 [6/7] Loss: 2.0359 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 3 [6/7] Loss: 2.0615 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 3 [6/7] Loss: 2.1202 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 3 [6/7] Loss: 2.1484 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 4 [116/117] Loss: 1.8459 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 4 [116/117] Loss: 1.8381 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 4 [116/117] Loss: 1.7148 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 4 [116/117] Loss: 1.9272 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 4 [6/7] Loss: 2.0707 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 4 [6/7] Loss: 2.1365 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 4 [6/7] Loss: 2.1037 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validating Epoch: 4 [6/7] Loss: 2.0974 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00

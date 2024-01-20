@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/get_last_epoch.py", line 2, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+/var/lib/slurm/slurmd/job2203954/slurm_script: line 13: test: -ge: unary operator expected
+/usr/local/anaconda3/bin/python: Error while finding module specification for 'torch.distributed.run' (ModuleNotFoundError: No module named 'torch')
+/usr/local/anaconda3/bin/python: Error while finding module specification for 'torch.distributed.run' (ModuleNotFoundError: No module named 'torch')

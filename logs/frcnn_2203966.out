@@ -1,0 +1,8 @@
+device:device:  cudacuda
+
+Training Epoch: 0 [233/234] Loss: 1.3726 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Training Epoch: 0 [233/234] Loss: 1.4581 ━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validation shapes matched: torch.Size([1200, 4]) torch.Size([1200, 4])
+Validating Epoch: 0 [0/14] Loss: 2.1382 ━╸                            7% -:--:--
+Validating Epoch: 0 [0/14] Loss: 2.1207 ━╸                            7% -:--:--
