@@ -27,11 +27,11 @@ mean = (0.485, 0.456, 0.406)
 std = (0.229, 0.224, 0.225)
 # Define transforms
 TRAIN_TRANSFORM = transforms.Compose([
-    transforms.Resize((800, 600)),  # Resize the image
-    transforms.RandomResizedCrop(800, scale=(0.8, 1.0)),  # Random crop and resize
-    transforms.RandomHorizontalFlip(p=0.5),  # Random horizontal flip
-    transforms.RandomVerticalFlip(p=0.2),  # Random vertical flip (optional)
-    transforms.RandomRotation(15),  # Random rotation by +/- 15 degrees
+    transforms.Resize((1024, 1024)),  # Resize the image
+    #transforms.RandomResizedCrop(800, scale=(0.8, 1.0)),  # Random crop and resize
+    #transforms.RandomHorizontalFlip(p=0.5),  # Random horizontal flip
+    #transforms.RandomVerticalFlip(p=0.2),  # Random vertical flip (optional)
+    #transforms.RandomRotation(15),  # Random rotation by +/- 15 degrees
     transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),  # Color jitter
     transforms.RandomPerspective(distortion_scale=0.2, p=0.2),  # Random perspective
     transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0)),  # Gaussian blur with variable sigma
@@ -40,15 +40,15 @@ TRAIN_TRANSFORM = transforms.Compose([
 ])
 
 TEST_TRANSFORM = transforms.Compose([
-    transforms.Resize((800, 800)),  # Resize the image
-    transforms.CenterCrop(800),  # Center crop
+    transforms.Resize((1024, 1024)),  # Resize the image
+    #transforms.CenterCrop(1024),  # Center crop
     transforms.ToTensor(),  # Convert to tensor
     # transforms.Normalize(mean=mean, std=std)  # Normalize
 ])
 
 VAL_TRANSFORM = transforms.Compose([
-    transforms.Resize((800, 800)),  # Resize the image
-    transforms.CenterCrop(800),  # Center crop
+    transforms.Resize((1024, 1024)),  # Resize the image
+    #transforms.CenterCrop(1024),  # Center crop
     transforms.ToTensor(),  # Convert to tensor
     transforms.Normalize(mean=mean, std=std)  # Normalize
 ])
