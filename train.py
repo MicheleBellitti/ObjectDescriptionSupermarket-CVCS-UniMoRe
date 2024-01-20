@@ -15,6 +15,8 @@ import torchvision
 from torchvision.models.detection import ssdlite320_mobilenet_v3_large
 from torchvision.models.detection.ssdlite import SSDLiteClassificationHead
 from torchvision.models.detection import _utils as det_utils
+from torchvision.models.detection import fasterrcnn_resnet50_fpn
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 import torchvision.ops as ops
 from torch.nn import SmoothL1Loss
 import torch.distributed as dist
