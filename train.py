@@ -307,16 +307,16 @@ def main():
     )
 
     # Optimizer and scheduler
-    # optimizer = SGD(mode.parameters(), lr=config['lr'], weight_decay=config["weight_decay"], momentum=config['momentum'])
-    optimizer = torch.optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config['weight_decay'])
-    # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
+    optimizer = SGD(model.parameters(), lr=config['lr'], weight_decay=config["weight_decay"], momentum=config['momentum'])
+    #optimizer = torch.optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config['weight_decay'])
+    #optimizer = AdaBelief(model.parameters(), lr=config['lr'], eps=1e-16, betas=(0.9, 0.999), weight_decay=config['weight_decay'])
     
+    # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1) 
+    #lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['epochs'])
+    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=True, eps=1e-5, cooldown=0, min_lr=0)
     
-    # optimizer = AdaBelief(model.parameters(), lr=config['lr'], eps=1e-16, betas=(0.9, 0.999), weight_decay=config['weight_decay'])
-    lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['epochs'])
-
     # Tensorboard writer
-    writer = SummaryWriter(log_dir=args.log_dir)
+    writer = SummaryWriter(log_dir=args.log_dir,flush_secs=90)
 
     # Resume from checkpoint
     if args.resume_checkpoint:
@@ -347,7 +347,7 @@ def main():
         val_loss = validate(model, val_dataloader, device, epoch, writer)
         writer.add_scalar("Loss/Validation", val_loss, epoch)
 
-        lr_scheduler.step()
+        lr_scheduler.step(train_loss)
         if dist.get_rank() == 0:
         # Save checkpoint
             save_checkpoint(epoch + 1, model, optimizer, lr_scheduler, args.model)

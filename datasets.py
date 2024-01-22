@@ -29,11 +29,11 @@ std = (0.229, 0.224, 0.225)
 TRAIN_TRANSFORM = transforms.Compose([
     transforms.Resize((1024, 1024)),  # Resize the image
     #transforms.RandomResizedCrop(800, scale=(0.8, 1.0)),  # Random crop and resize
-    #transforms.RandomHorizontalFlip(p=0.5),  # Random horizontal flip
+    transforms.RandomHorizontalFlip(p=0.5),  # Random horizontal flip
     #transforms.RandomVerticalFlip(p=0.2),  # Random vertical flip (optional)
     #transforms.RandomRotation(15),  # Random rotation by +/- 15 degrees
-    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),  # Color jitter
-    transforms.RandomPerspective(distortion_scale=0.2, p=0.2),  # Random perspective
+    #transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),  # Color jitter
+    #transforms.RandomPerspective(distortion_scale=0.2, p=0.2),  # Random perspective
     transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0)),  # Gaussian blur with variable sigma
     transforms.ToTensor(),  # Convert to tensor
     transforms.Normalize(mean=mean, std=std)  # Normalize
@@ -363,10 +363,10 @@ class SKUDataset(Dataset):
             class_id = 1 if class_id == "object" else 0
 
             # Scale annotations according to the resized image
-            x1 = x1 / image_width * 800
-            y1 = y1 / image_height * 800
-            x2 = x2 / image_width * 800
-            y2 = y2 / image_height * 800
+            x1 = x1 / image_width * 1024
+            y1 = y1 / image_height * 1024
+            x2 = x2 / image_width * 1024
+            y2 = y2 / image_height * 1024
 
             # Append annotation to the list
             image_annotations.append([x1, y1, x2, y2, class_id, image_width, image_height])

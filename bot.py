@@ -19,7 +19,7 @@ def send_telegram_message(message):
 
 # Function to read log file and extract relevant info
 def read_log_file():
-    with open('logs/retinanet/train.log', 'r') as file:
+    with open('./logs/frcnn/train.log', 'r') as file:
         lines = file.readlines()
 
     # Find the latest epoch and loss information in the log file

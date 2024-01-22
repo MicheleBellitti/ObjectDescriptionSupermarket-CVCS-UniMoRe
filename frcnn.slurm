@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --partition=all_usr_prod
-#SBATCH --time=18:00:00
+#SBATCH --partition=all_serial
+#SBATCH --time=04:00:00
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=4   # Number of tasks (GPUs) per node
 #SBATCH --nodes=1             # Number of nodes requested
@@ -12,7 +12,7 @@
 TARGET_EPOCHS=5
 
 # Train frcnn
-if test $(python3 get_last_epoch.py checkpoints/ssd/checkpoint.pth) -ge 2
+if test $(python3 get_last_epoch.py checkpoints/frcnn/checkpoint.pth) -ge 2
 then
     python -m torch.distributed.run \
     --nproc_per_node=4 \
@@ -38,4 +38,4 @@ python -m torch.distributed.run \
     --node_rank=${SLURM_NODEID} \
     --master_addr=$(hostname -s) \
     --master_port=12347 \
-    evaluate.py --config ./config.yaml --model frcnn
+    evaluate.py --config ./config.yaml --model frcnn > logs/frcnn/test.log
