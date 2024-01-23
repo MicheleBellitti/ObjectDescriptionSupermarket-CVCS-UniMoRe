@@ -40,7 +40,7 @@ from utils import calculate_mAP, find_jaccard_overlap
 # Supports SSD, Faster R-CNN and RetinaNet models. Can run distributed evaluation using multiple GPUs.
 
 # Constants
-CONFIDENCE_THRESHOLD = 0.51
+CONFIDENCE_THRESHOLD = 0.50
 NMS_THRESHOLD = 0.15
 
 dominant_colors = []
@@ -127,10 +127,11 @@ def visualize_results(images, outputs, writer=None, log_dir='logs/'):
         boxes = output["boxes"].cpu().detach().numpy()
         scores = output["scores"].cpu().detach().numpy()
         labels = output["labels"].cpu().detach().numpy()
-        # keep = nms(torch.from_numpy(boxes), torch.from_numpy(scores), NMS_THRESHOLD)
-        # boxes = boxes[keep]
-        # scores = scores[keep]
-        # labels = labels[keep]
+        keep = nms(torch.from_numpy(boxes), torch.from_numpy(scores), NMS_THRESHOLD)
+        boxes = boxes[keep]
+        scores = scores[keep]
+        labels = labels[keep]
+        
         fig, ax = plt.subplots()
         image_np = image.permute(1, 2, 0).cpu().numpy()
         ax.imshow(image_np)

@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name='monitor_retina'
-#SBATCH --partition=all_usr_prod
+#SBATCH --job-name='bot'
+#SBATCH --partition=all_serial
 #SBATCH --cpus-per-task=2
-#SBATCH --time=1-00:00:00  # Adjust as needed
+#SBATCH --time=04:00:00  # Adjust as needed
 
 python bot.py

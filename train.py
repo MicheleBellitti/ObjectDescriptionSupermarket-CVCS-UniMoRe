@@ -313,7 +313,7 @@ def main():
     
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1) 
     #lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['epochs'])
-    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=True, eps=1e-5, cooldown=0, min_lr=0)
+    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=True, cooldown=0, min_lr=0.0)
     
     # Tensorboard writer
     writer = SummaryWriter(log_dir=args.log_dir,flush_secs=90)
@@ -328,7 +328,7 @@ def main():
         logging.info("Resuming from checkpoint at epoch {}".format(start_epoch))
     else:
         start_epoch = 0
-
+    lr_scheduler.eps = 1e-8
     # Training loop
     for epoch in range(start_epoch, config["epochs"]):
         train_sampler.set_epoch(epoch)
@@ -347,7 +347,7 @@ def main():
         val_loss = validate(model, val_dataloader, device, epoch, writer)
         writer.add_scalar("Loss/Validation", val_loss, epoch)
 
-        lr_scheduler.step(train_loss)
+        lr_scheduler.step(val_loss)
         if dist.get_rank() == 0:
         # Save checkpoint
             save_checkpoint(epoch + 1, model, optimizer, lr_scheduler, args.model)

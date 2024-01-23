@@ -1,0 +1,40 @@
+device: cuda
+device:device:  device:cuda
+cuda 
+cuda
+Training Epoch: 34 [174/175] Loss: 1.4064 ━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00Training Epoch: 34 [174/175] Loss: 1.6496 ━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00Training Epoch: 34 [174/175] Loss: 1.6671 ━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00Training Epoch: 34 [174/175] Loss: 1.5765 ━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+
+
+
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validating Epoch: 34 [6/11] Loss: 2.0332 ━━━━━━━━━━━━━━━━╸           64% 0:00:13
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
+Validation shapes matched: torch.Size([800, 4]) torch.Size([800, 4])
