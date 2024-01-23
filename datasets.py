@@ -127,49 +127,63 @@ def collate_fn(batch):
 
 
 class FreiburgDataset(Dataset):
-    """class for loading the Freiburg dataset"""
+    
+    def __init__(self, data_dir="/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe-old/Datasets/freiburg_groceries_dataset"):
+        self.data_dir = data_dir  # directory dataset
+        self.images = []  # images
+        self.labels = []  # relative labels
+        self._load_data()  # loading dataset
 
-    def __init__(self, split='train', num_split=0, transform=None):
-        super(FreiburgDataset, self).__init__()
-        self.root = "Datasets/freiburg_groceries_dataset/images"
-        self.split = split
-        self.num_split = num_split
-        self.transform = transform
-        self.samples = []
-        self.classes = []
-        self.labels = []
-        self.classId_file = "Datasets/freiburg_groceries_dataset/classid.txt"
-        self.load_classes()
-        self.split_dir = os.path.join(self.root, self.split + str(self.num_split))
-        self.load_samples()
-
-    def load_classes(self):
-        with open(self.classId_file, "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                class_name, class_label = line.strip().split()
-                self.classes.append(class_name)
-                self.labels.append(class_label)
-
-    def load_samples(self):
-        with open(os.path.join(self.split_dir, ".txt"), "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                line = line.strip()
-                img_path, class_id = line.strip().split()
-                self.samples.append((os.path.join(self.split_dir, img_path), int(class_id)))
+    def _load_data(self):
+        label_map = {
+            'BEANS': 0,
+            'CAKE': 1,
+            'CANDY': 2,
+            'CEREAL': 3,
+            'CHIPS': 4,
+            'CHOCOLATE': 5,
+            'COFFEE': 6,
+            'CORN': 7,
+            'FISH': 8,
+            'FLOUR': 9,
+            'HONEY': 10,
+            'JAM': 11,
+            'JUICE': 12,
+            'MILK': 13,
+            'NUTS': 14,
+            'OIL': 15,
+            'PASTA': 16,
+            'RICE': 17,
+            'SODA': 18,
+            'SPICES': 19,
+            'SUGAR': 20,
+            'TEA': 21,
+            'TOMATO_SAUCE': 22,
+            'VINEGAR': 23,
+            'WATER': 24
+        }
+        label_names = sorted(os.listdir(self.data_dir))
+        for label in label_names:
+            label_dir = os.path.join(self.data_dir, label)
+            if os.path.isdir(label_dir):
+                image_files = os.listdir(label_dir)
+                for img in image_files:
+                    image_path = os.path.join(label_dir, img)
+                    pil_image = Image.open(image_path).convert("RGB")
+                    transform = ToTensor()
+                    tensor_image = transform(pil_image)
+                    self.images.append(tensor_image)
+                tmp_labels = [label] * len(image_files)
+                labels = [label_map[label] for label in tmp_labels]
+                self.labels.extend(labels)
 
     def __len__(self):
-        return len(self.classes)
+        return len(self.images)
 
-    def __getitem__(self, idx):
-        img_path, label = self.samples[idx]
-        img = Image.open(img_path).convert('RGB')
-
-        if self.transform:
-            img = self.transform(img)
-
-        return img, label
+    def __getitem__(self, idx):  # get a specific image given the index
+        image = self.images[idx]
+        label = self.labels[idx]
+        return image, label
 
 
 class ShelvesDataset(Dataset):

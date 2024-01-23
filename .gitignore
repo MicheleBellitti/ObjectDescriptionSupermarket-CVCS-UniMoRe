@@ -1,4 +1,3 @@
-checkpoints/frcnn/checkpoint.pth
 ./Datasets
 ./yolov5
 ./train_results
