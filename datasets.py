@@ -128,7 +128,7 @@ def collate_fn(batch):
 
 class FreiburgDataset(Dataset):
     
-    def __init__(self, data_dir="/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe-old/Datasets/freiburg_groceries_dataset"):
+    def __init__(self, data_dir="/work/cvcs_2023_group23/images/"):
         self.data_dir = data_dir  # directory dataset
         self.images = []  # images
         self.labels = []  # relative labels
