@@ -7,14 +7,15 @@ import torch.optim as optim
 import torch.nn as nn
 from matplotlib import pyplot as plt
 from torch.utils.data import DataLoader
-from torchvision.models import GoogLeNet_Weights
+# from torchvision.models import GoogLeNet_Weights
 
-from datasets FreiburgDataset, GroceryStoreDataset
+from datasets import FreiburgDataset, GroceryStoreDataset
 from tqdm import tqdm
 
 
-trainset = FreiburgDataset()
-valset = FreiburgDataset()
+trainset = FreiburgDataset(split='train')
+valset = FreiburgDataset(split='val')
+
 
 num_classes = 25
 
@@ -26,7 +27,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print(f'Running on {device}...')
 model = torchvision.models.densenet121(pretrained=True).to(device)
 
-# model = torchvision.models.resnet18().to(device)
+# model = torchvision.models.resnet50().to(device)
 model.classifier = nn.Linear(
     1024,  num_classes).to(device)
 criterion = nn.CrossEntropyLoss()
@@ -35,15 +36,8 @@ scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0
 
 if os.path.exists('classifier.pth'):
     model.load_state_dict(torch.load('classifier.pth'))
-epochs = 10
+epochs = 50
 
-print('''
-#################################################################
-#                                                               #
-#                       Training Started                        #
-#                                                               #                 
-#################################################################
-''')
 losses = []
 val_losses = []
 acc = 0
@@ -120,3 +114,25 @@ ax.plot(x, losses, label="training loss")
 ax.plot(x, val_losses, label="validation loss")
 ax.legend()
 plt.savefig('classification_results.png')
+
+# Evaluation part
+
+testset = FreiburgDataset(split='test')
+testloader = DataLoader(testset, batch_size=16, shuffle=True, num_workers=2)
+
+accuracy = 0
+with torch.no_grad():
+        for idx, data in enumerate(testloader):
+            images, test_labels = data
+            images = images.to(device)
+            test_labels = test_labels.to(device)
+
+            test_outputs = model(images)
+            _, predicted = torch.max(test_outputs.data, 1)
+            
+
+            total += test_labels.size(0)
+            correct += (predicted == val_labels).sum().item()
+        accuracy = 100 * correct / total
+
+print(f"Evaluation ended.\n\n Accuracy: {accuracy}")
