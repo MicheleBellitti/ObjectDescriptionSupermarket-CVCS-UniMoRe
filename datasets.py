@@ -127,63 +127,30 @@ def collate_fn(batch):
 
 
 class FreiburgDataset(Dataset):
-    
-    def __init__(self, data_dir="/work/cvcs_2023_group23/images/"):
-        self.data_dir = data_dir  # directory dataset
-        self.images = []  # images
-        self.labels = []  # relative labels
-        self._load_data()  # loading dataset
+    def __init__(self, split, data_dir="/work/cvcs_2023_group23/images/", index=1):
+        self.data_dir = data_dir
+        self.split = split  # split can be 'train', 'test', or 'val'
+        self.index = index
+        self.image_labels = []
+        self._load_data()
 
     def _load_data(self):
-        label_map = {
-            'BEANS': 0,
-            'CAKE': 1,
-            'CANDY': 2,
-            'CEREAL': 3,
-            'CHIPS': 4,
-            'CHOCOLATE': 5,
-            'COFFEE': 6,
-            'CORN': 7,
-            'FISH': 8,
-            'FLOUR': 9,
-            'HONEY': 10,
-            'JAM': 11,
-            'JUICE': 12,
-            'MILK': 13,
-            'NUTS': 14,
-            'OIL': 15,
-            'PASTA': 16,
-            'RICE': 17,
-            'SODA': 18,
-            'SPICES': 19,
-            'SUGAR': 20,
-            'TEA': 21,
-            'TOMATO_SAUCE': 22,
-            'VINEGAR': 23,
-            'WATER': 24
-        }
-        label_names = sorted(os.listdir(self.data_dir))
-        for label in label_names:
-            label_dir = os.path.join(self.data_dir, label)
-            if os.path.isdir(label_dir):
-                image_files = os.listdir(label_dir)
-                for img in image_files:
-                    image_path = os.path.join(label_dir, img)
-                    pil_image = Image.open(image_path).convert("RGB")
-                    transform = ToTensor()
-                    tensor_image = transform(pil_image)
-                    self.images.append(tensor_image)
-                tmp_labels = [label] * len(image_files)
-                labels = [label_map[label] for label in tmp_labels]
-                self.labels.extend(labels)
+        # Iterate over the split files
+        split_file = f"data/{self.split}{self.index}.txt"
+        with open(split_file, 'r') as file:
+            for line in file:
+                image_path, label = line.strip().split()
+                full_path = os.path.join(self.data_dir, image_path)
+                self.image_labels.append((full_path, int(label)))
 
     def __len__(self):
-        return len(self.images)
+        return len(self.image_labels)
 
-    def __getitem__(self, idx):  # get a specific image given the index
-        image = self.images[idx]
-        label = self.labels[idx]
-        return image, label
+    def __getitem__(self, idx):
+        image_path, label = self.image_labels[idx]
+        image = Image.open(image_path).convert("RGB")
+        tensor_image = ToTensor()(image)
+        return tensor_image, label
 
 
 class ShelvesDataset(Dataset):
@@ -431,107 +398,6 @@ def custom_collate_fn(batch):
 
     return images, x1_padded, y1_padded, x2_padded, y2_padded, class_ids, image_widths, image_heights
                 
-
-####################################################################################
-#                                                                                  #
-#          VERSION WITH:                                                           #
-#                  -  BETTER CORRUPTION HANDLING                                   #
-#                  -  BETTER SETUP WITH CONFIG FILES                               #
-#                  -  STILL REQUIRES TESTING AND A PROPER SETUP(GIST)              #
-#                                                                                  #
-####################################################################################
-
-
-""" class SKUDataset(Dataset):
-    
-    
-    def __init__(self, config_path):
-        self.load_config(config_path)
-
-        # Derived from root directory in config
-        self.images_dir = os.path.join(self.root_dir, 'images')
-        self.annotations_dir = os.path.join(self.root_dir, 'annotations')
-
-        # Load annotations from annotations directory specified in config
-        annotations_file = os.path.join(self.annotations_dir, f'annotations_{self.split}.csv')
-        self.annotations_df = pd.read_csv(annotations_file, header=None).dropna()
-
-        self.good_image_indices = set()
-        self.load_good_indices_from_cloud()  # Load good indices from cloud
-
-    def load_config(self, config_path):
-        with open(config_path, 'r') as config_file:
-            config = yaml.safe_load(config_file)
-            self.github_token = config['github_token']
-            self.gist_id = config['gist_id']
-            self.root_dir = config['root_dir']
-            self.split = config['split']
-
-    def save_good_indices_to_cloud(self):
-        # Save the set of good indices to GitHub Gist
-        gist_content = ",".join(str(idx) for idx in self.good_image_indices)
-        gist_url = f'https://api.github.com/gists/{self.gist_id}'
-        headers = {"Authorization": f"token {self.github_token}"}
-        data = {"files": {"good_indices.txt": {"content": gist_content}}}
-        response = requests.patch(gist_url, json=data, headers=headers)
-
-    def load_good_indices_from_cloud(self):
-        # Load the set of good indices from GitHub Gist
-        gist_url = f'https://api.github.com/gists/{self.gist_id}'
-        response = requests.get(gist_url)
-        if response.status_code == 200:
-            gist_data = response.json()
-            if "files" in gist_data and "good_indices.txt" in gist_data["files"]:
-                good_indices_str = gist_data["files"]["good_indices.txt"]["content"]
-                self.good_image_indices = set(int(idx) for idx in good_indices_str.split(','))
-
-    def __len__(self):
-        return len(self.annotations_df)
-
-    def __getitem__(self, idx):
-        row = self.annotations_df.iloc[idx]
-        img_name = row[0]
-        x1 = row[1]
-        y1 = row[2]
-        x2 = row[3]
-        y2 = row[4]
-        class_id = row[5]
-        image_width = row[6]
-        image_height = row[7]
-
-        class_id = 0 if class_id == "object" else 1
-        
-        img_path = os.path.join(self.images_dir, img_name)
-        try:
-            image = Image.open(img_path).convert('RGB')
-            self.good_image_indices.add(idx)  # Add index to the set of good indexes
-        except (OSError, IOError) as e:
-            print(f"Error loading image {img_path}: {e}")
-            error_log_path = 'corrupted_images.log'
-            with open(error_log_path, 'a') as f:
-                f.write(f"Corrupted image: {img_path}\n")
-
-            # Replace with a good image
-            if self.good_image_indices:
-                good_index = random.choice(list(self.good_image_indices))
-                good_row = self.annotations_df.iloc[good_index]
-                good_img_name = good_row[0]
-                good_img_path = os.path.join(self.images_dir, good_img_name)
-                try:
-                    good_image = Image.open(good_img_path).convert('RGB')
-                    image = good_image
-                except (OSError, IOError) as e:
-                    print(f"Unexpected error loading good image {good_img_path}: {e}")
-                    # As a last resort, use a blank image.
-                    image = Image.new('RGB', (image_width, image_height), (0, 0, 0))
-                    
-        # Save good indices to the cloud after each replacement
-        self.save_good_indices_to_cloud()
-
-        return image, x1, y1, x2, y2, class_id, image_width, image_height
-
-"""
-
 
 class SKUDatasetGPU(Dataset):
 
