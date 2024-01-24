@@ -145,7 +145,13 @@ class FreiburgDataset(Dataset):
 
     def __len__(self):
         return len(self.image_labels)
+        return len(self.image_labels)
 
+    def __getitem__(self, idx):
+        image_path, label = self.image_labels[idx]
+        image = Image.open(image_path).convert("RGB")
+        tensor_image = ToTensor()(image)
+        return tensor_image, label
     def __getitem__(self, idx):
         image_path, label = self.image_labels[idx]
         image = Image.open(image_path).convert("RGB")
@@ -397,6 +403,7 @@ def custom_collate_fn(batch):
     
 
     return images, x1_padded, y1_padded, x2_padded, y2_padded, class_ids, image_widths, image_heights
+                
                 
 
 class SKUDatasetGPU(Dataset):
