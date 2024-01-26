@@ -37,7 +37,7 @@ for model_index, model in models.items():
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.01, patience=3, verbose=True)
 
     # Check if a saved model exists
-    if os.path.exists(f'classifier_{model_index}.pth'):
+    if os.path.exists(f'freiburg/classifier_{model_index}.pth'):
         model.load_state_dict(torch.load(f'freiburg/classifier_{model_index}.pth'))
 
     trainloader = dataloaders[model_index]
@@ -59,9 +59,23 @@ for model_index, model in models.items():
             
             running_loss += loss.item()
             pbar.set_postfix({'loss': running_loss / (i + 1)})
-
+            model.eval()
+            valset = FreiburgDataset(split='val', index=int(model_index % 2))
+            val_loader = DataLoader(valset, batch_size=16, shuffle=True, num_workers=2)
+            
+            total_val_loss = 0
+            for eval_idx, eval_data in enumerate(val_loader):
+                
+                inputs, labels = eval_data
+                inputs, labels = inputs.to(device), labels.to(device)
+                out = model(inputs)
+                
+                val_loss = criterion(out, labels)
+                
+                total_val_loss += loss.item()
+                
         # Scheduler step
-        scheduler.step(running_loss)
+        scheduler.step(total_val_loss)
 
         # Save the model after each epoch
         torch.save(model.state_dict(), f'freiburg/classifier_{model_index}.pth')

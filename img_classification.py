@@ -13,7 +13,7 @@ from datasets import FreiburgDataset, GroceryStoreDataset
 from tqdm import tqdm
 
 
-trainset = FreiburgDataset(split='train')
+trainset = FreiburgDataset(split='full_training')
 valset = FreiburgDataset(split='val')
 
 
@@ -39,7 +39,7 @@ scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0
 
 if os.path.exists('freiburg/single/classifier.pth'):
     model.load_state_dict(torch.load('freiburg/single/classifier.pth'))
-epochs = 25
+epochs = 10
 
 losses = []
 val_losses = []
@@ -92,6 +92,8 @@ for epoch in range(epochs):
     
     model.train()
     scheduler.step(val_loss)
+    if epoch % 2 == 0:
+        torch.save(model.state_dict(), 'freiburg/single/classifier.pth')
    
 
 print(''''
@@ -120,7 +122,7 @@ plt.savefig('freiburg/single/classification_results.png')
 
 # Evaluation part
 
-testset = FreiburgDataset(split='test', index=2)
+testset = FreiburgDataset(split='full_testing')
 testloader = DataLoader(testset, batch_size=16, shuffle=True, num_workers=2)
 
 accuracy = 0
