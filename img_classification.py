@@ -29,14 +29,14 @@ model = torchvision.models.densenet121(pretrained=True).to(device)
 
 # model = torchvision.models.resnet50().to(device)
 model.classifier = nn.Linear(
-    1024,  num_classes).to(device)
+    512,  num_classes).to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adamax(model.parameters(), lr=1e-3)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.01, patience=3, verbose=True)
 
-if os.path.exists('classifier.pth'):
-    model.load_state_dict(torch.load('classifier.pth'))
-epochs = 50
+if os.path.exists('freiburg/single/classifier.pth'):
+    model.load_state_dict(torch.load('freiburg/single/classifier.pth'))
+epochs = 25
 
 losses = []
 val_losses = []

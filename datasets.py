@@ -129,14 +129,14 @@ def collate_fn(batch):
 class FreiburgDataset(Dataset):
     def __init__(self, split, data_dir="/work/cvcs_2023_group23/images/", index=1):
         self.data_dir = data_dir
-        self.split = split  # split can be 'train', 'test', or 'val'
+        self.split = split  # split can be 'train', 'test', 'val' or 'full' for the entire training set
         self.index = index
         self.image_labels = []
         self._load_data()
 
     def _load_data(self):
         # Iterate over the split files
-        split_file = f"data/{self.split}{self.index}.txt"
+        split_file = f"data/{self.split}{self.index}.txt" if self.split != 'full' else "data/full_training.txt"
         with open(split_file, 'r') as file:
             for line in file:
                 image_path, label = line.strip().split()
@@ -145,18 +145,14 @@ class FreiburgDataset(Dataset):
 
     def __len__(self):
         return len(self.image_labels)
-        return len(self.image_labels)
+       
 
     def __getitem__(self, idx):
         image_path, label = self.image_labels[idx]
         image = Image.open(image_path).convert("RGB")
         tensor_image = ToTensor()(image)
         return tensor_image, label
-    def __getitem__(self, idx):
-        image_path, label = self.image_labels[idx]
-        image = Image.open(image_path).convert("RGB")
-        tensor_image = ToTensor()(image)
-        return tensor_image, label
+    
 
 
 class ShelvesDataset(Dataset):
