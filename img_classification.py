@@ -28,8 +28,11 @@ print(f'Running on {device}...')
 model = torchvision.models.densenet121(pretrained=True).to(device)
 
 # model = torchvision.models.resnet50().to(device)
-model.classifier = nn.Linear(
-    512,  num_classes).to(device)
+model.classifier = nn.Sequential(
+    nn.Linear(
+    1024,  256).to(device),
+    nn.Linear(256, num_classes).to(device)
+    )
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adamax(model.parameters(), lr=1e-3)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.01, patience=3, verbose=True)
@@ -99,7 +102,7 @@ print(''''
 #################################################################
 ''')
 
-torch.save(model.state_dict(), 'classifier.pth')
+torch.save(model.state_dict(), 'freiburg/single/classifier.pth')
 
 print('''
 #################################################################
@@ -113,11 +116,11 @@ fig, ax = plt.subplots()
 ax.plot(x, losses, label="training loss")
 ax.plot(x, val_losses, label="validation loss")
 ax.legend()
-plt.savefig('classification_results.png')
+plt.savefig('freiburg/single/classification_results.png')
 
 # Evaluation part
 
-testset = FreiburgDataset(split='test')
+testset = FreiburgDataset(split='test', index=2)
 testloader = DataLoader(testset, batch_size=16, shuffle=True, num_workers=2)
 
 accuracy = 0
@@ -135,4 +138,4 @@ with torch.no_grad():
             correct += (predicted == val_labels).sum().item()
         accuracy = 100 * correct / total
 
-print(f"Evaluation ended.\n\n Accuracy: {accuracy}")
+print(f"Evaluation ended.\n\n Accuracy: {accuracy}%")

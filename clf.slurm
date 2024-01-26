@@ -12,4 +12,5 @@
 
 
 # train
-python3 imagerec_bagging.py
+python3 img_classification.py
+# python3 imagerec_bagging.py
