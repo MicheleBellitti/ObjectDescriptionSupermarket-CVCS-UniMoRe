@@ -96,7 +96,7 @@ for epoch in range(epochs):
         torch.save(model.state_dict(), 'freiburg/single/classifier.pth')
    
 
-print(''''
+print('''
 #################################################################
 #                                                               #
 #                       Training Completed                      #
@@ -112,7 +112,7 @@ print('''
 #                       Model Saved                             #
 #                                                               #                 
 #################################################################
-      ''')
+''')
 x = np.linspace(0, epochs, epochs)
 fig, ax = plt.subplots()
 ax.plot(x, losses, label="training loss")
@@ -126,6 +126,8 @@ testset = FreiburgDataset(split='full_testing')
 testloader = DataLoader(testset, batch_size=16, shuffle=True, num_workers=2)
 
 accuracy = 0
+total = 0
+correct = 0
 with torch.no_grad():
         for idx, data in enumerate(testloader):
             images, test_labels = data
