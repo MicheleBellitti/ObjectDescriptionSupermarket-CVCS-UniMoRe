@@ -44,7 +44,6 @@ epochs = 10
 losses = []
 val_losses = []
 acc = 0
-
 # training loop
 model.train()
 for epoch in range(epochs):
@@ -139,7 +138,7 @@ with torch.no_grad():
             
 
             total += test_labels.size(0)
-            correct += (predicted == val_labels).sum().item()
+            correct += (predicted == test_labels).sum().item()
         accuracy = 100 * correct / total
 
 print(f"Evaluation ended.\n\n Accuracy: {accuracy}%")
