@@ -77,8 +77,8 @@ def get_model(model_name, num_classes):
         model = CustomRetinaNet(num_classes=num_classes)
     elif model_name == 'frcnn':
         #model = fasterrcnn_resnet50_fpn(pretrained=True) #used in [240123] checkpoint
-        weights = torchvision.models.detection.FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
-        model = torchvision.models.detection.fasterrcnn_resnet50_fpn_v2(weights=weights)
+        weights = torchvision.models.detection.FasterRCNN_ResNet50_FPN_Weights.DEFAULT
+        model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=weights)
         in_features = model.roi_heads.box_predictor.cls_score.in_features
         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
 
