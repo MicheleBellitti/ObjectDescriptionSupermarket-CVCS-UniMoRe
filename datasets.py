@@ -25,15 +25,16 @@ import pandas as pd
 # create a custom dataset class for each dataset
 mean = (0.485, 0.456, 0.406)
 std = (0.229, 0.224, 0.225)
+
 # Define transforms
 TRAIN_TRANSFORM = transforms.Compose([
     transforms.Resize((1024, 1024)),  # Resize the image
     #transforms.RandomResizedCrop(800, scale=(0.8, 1.0)),  # Random crop and resize
     transforms.RandomHorizontalFlip(p=0.5),  # Random horizontal flip
-    #transforms.RandomVerticalFlip(p=0.2),  # Random vertical flip (optional)
-    #transforms.RandomRotation(15),  # Random rotation by +/- 15 degrees
-    #transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),  # Color jitter
-    #transforms.RandomPerspective(distortion_scale=0.2, p=0.2),  # Random perspective
+    transforms.RandomVerticalFlip(p=0.5),  # Random vertical flip (optional)
+    transforms.RandomRotation(15),  # Random rotation by +/- 15 degrees
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),  # Color jitter
+    transforms.RandomPerspective(distortion_scale=0.2, p=0.2),  # Random perspective
     transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0)),  # Gaussian blur with variable sigma
     transforms.ToTensor(),  # Convert to tensor
     transforms.Normalize(mean=mean, std=std)  # Normalize
@@ -125,12 +126,13 @@ def collate_fn(batch):
     # print(inputs_padded.shape, targets_padded.shape)
     return inputs_padded, targets_padded
 
-
 class FreiburgDataset(Dataset):
-    def __init__(self, split, data_dir="/work/cvcs_2023_group23/images/", index=1):
+    def __init__(self, split, data_dir="/work/cvcs_2023_group23/images/", index=1, transform=None):
         self.data_dir = data_dir
         self.split = split  # split can be 'train', 'test', 'val' or 'full_<training or testing>' for the entire training set
         self.index = index
+        self.transform = transform
+        self.targets = []
         self.image_labels = []
         self._load_data()
 
@@ -143,6 +145,7 @@ class FreiburgDataset(Dataset):
                 image_path, label = line.strip().split()
                 full_path = os.path.join(self.data_dir, image_path)
                 self.image_labels.append((full_path, int(label)))
+                self.targets.append(label)
 
     def __len__(self):
         return len(self.image_labels)
