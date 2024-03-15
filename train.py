@@ -311,13 +311,14 @@ def main():
     )
 
     # Optimizer and scheduler
-    optimizer = SGD(model.parameters(), lr=config['lr'], weight_decay=config["weight_decay"], momentum=config['momentum'])
-    #optimizer = torch.optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config['weight_decay'])
-    #optimizer = AdaBelief(model.parameters(), lr=config['lr'], eps=1e-16, betas=(0.9, 0.999), weight_decay=config['weight_decay'])
+    #optimizer = SGD(model.parameters(), lr=config['lr'], weight_decay=config["weight_decay"], momentum=config['momentum'])
+    optimizer = SGD(model.parameters(), lr=config['lr'], weight_decay=config["weight_decay"], momentum=config["momentum"])
+    # optimizer = torch.optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config['weight_decay'])
+    #optimizer = AdaBelief(model.parameters(), lr=config['lr'], eps=1e-8, betas=(0.9, 0.999), weight_decay=config['weight_decay'])
     
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1) 
     #lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['epochs'])
-    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=True, cooldown=0, min_lr=0.0)
+    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True, cooldown=0, min_lr=0.0)
     
     # Tensorboard writer
     writer = SummaryWriter(log_dir=args.log_dir,flush_secs=90)

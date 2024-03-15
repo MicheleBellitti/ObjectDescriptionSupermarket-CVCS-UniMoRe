@@ -144,26 +144,29 @@ ax.plot(x, val_losses, label="validation loss")
 ax.legend()
 plt.savefig('freiburg/single/classification_results.png')
 
-# Evaluation part
+## Evaluation part
 
-testset = FreiburgDataset(split='full_testing')
-testloader = DataLoader(testset, batch_size=16, shuffle=True, num_workers=2)
+## testset = FreiburgDataset(split='full_testing')
+## testloader = DataLoader(testset, batch_size=16, shuffle=True, num_workers=2)
 
-accuracy = 0
-total = 0
-correct = 0
-with torch.no_grad():
-        for idx, data in enumerate(testloader):
-            images, test_labels = data
-            images = images.to(device)
-            test_labels = test_labels.to(device)
+# testset = FreiburgDataset(split='full_testing', transform=TEST_TRANSFORM)
+# testloader = DataLoader(testset, batch_size=32, shuffle=True, num_workers=2)
 
-            test_outputs = model(images)
-            _, predicted = torch.max(test_outputs.data, 1)
+# accuracy = 0
+# total = 0
+# correct = 0
+# with torch.no_grad():
+#         for idx, data in enumerate(testloader):
+#             images, test_labels = data
+#             images = images.to(device)
+#             test_labels = test_labels.to(device)
+
+#             test_outputs = model(images)
+#             _, predicted = torch.max(test_outputs.data, 1)
             
 
-            total += test_labels.size(0)
-            correct += (predicted == test_labels).sum().item()
-        accuracy = 100 * correct / total
+#             total += test_labels.size(0)
+#             correct += (predicted == test_labels).sum().item()
+#         accuracy = 100 * correct / total
 
-print(f"Evaluation ended.\n\n Accuracy: {accuracy}%")
+# print(f"Evaluation ended.\n\n Accuracy: {accuracy}%")

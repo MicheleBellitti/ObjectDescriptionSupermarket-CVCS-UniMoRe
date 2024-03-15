@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=all_serial
-#SBATCH --time=3:00:00
+#SBATCH --time=00:30:00
 #SBATCH --gres=gpu:1
 
 #SBATCH --nodes=1             # Number of nodes requested
@@ -14,3 +14,6 @@
 # train
 python3 img_classification.py
 # python3 imagerec_bagging.py
+
+# test
+python3 img_classification_test.py

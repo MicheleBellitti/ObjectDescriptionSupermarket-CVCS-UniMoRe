@@ -1,16 +1,15 @@
 #!/bin/bash
-#SBATCH --partition=all_usr_prod
+#SBATCH --partition=all_serial
 #SBATCH --time=04:00:00
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=4   # Number of tasks (GPUs) per node
 #SBATCH --nodes=1             # Number of nodes requested
 #SBATCH --output=./logs/frcnn_%j.out
 #SBATCH --error=./logs/frcnn_%j.err
-#SBATCH --constraint="gpu_RTX5000_16G"
-#SBATCH --mail-user=319399@studenti.unimore.it
+#SBATCH --mail-user=274236@studenti.unimore.it
 #SBATCH --mail-type=ALL
 
-TARGET_EPOCHS=5
+TARGET_EPOCHS=100
 
 # Train frcnn
 if test $(python3 get_last_epoch.py checkpoints/frcnn/checkpoint.pth) -ge 2

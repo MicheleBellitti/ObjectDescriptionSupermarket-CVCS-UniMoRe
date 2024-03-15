@@ -1,7 +1,7 @@
 # Training settings
 
 epochs: 100
-lr: 0.000075
+lr: 0.001
 eps: 0.00000001
 weight_decay: 0.0005
 momentum: 0.9
@@ -22,7 +22,7 @@ model:
 logging:
   tensorboard_log_dir: "./logs"
   save_model_dir: "./saved_model"
-  save_frequency: 2 # Save model every 'n' epochs
+  save_frequency: 1 # Save model every 'n' epochs
 
 # Hardware settings
 
@@ -30,5 +30,5 @@ device: "cuda" # or "cpu"
 num_workers: 2
 
 confidence_threshold: 0.51
-nms_threshold: 0.7
+nms_threshold: 0.3
 num_classes: 2
