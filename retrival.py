@@ -10,6 +10,8 @@ from scipy.spatial.distance import mahalanobis, euclidean
 from matplotlib import pyplot as plt
 from datasets import FreiburgDataset
 
+image_path = "retrival_files/images/pasta_1.jpg"  # Update this path
+
 # Configuration settings for the image retrieval system
 class Config:
     DATA_DIR = "/work/cvcs_2023_group23/images/"  # Directory for dataset images
@@ -21,7 +23,6 @@ class Config:
     print(torch.cuda.is_available())
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # Device configuration
     print(DEVICE)
-
 
 class ModelHandler:
     def __init__(self, config):
@@ -80,11 +81,8 @@ def extract_embeddings(dataloader, model):
     return embeddings
 
 def apply_pca(embeddings):
-    print("7.1 ")
     pca = PCA(n_components=Config.N_COMPONENTS)
-    print("7.2 ") 
     pca_embeddings = pca.fit_transform(embeddings)
-    print("7.3 ") 
     return pca_embeddings, pca
 
 def calculate_cosine_similarity(query_embedding, embeddings):
@@ -98,7 +96,7 @@ def compute_euclidean_distances(query_embedding, embeddings):
     distances = [euclidean(query_embedding, emb) for emb in embeddings]
     return np.array(distances)
 
-def main():
+def main(image_path):
     config = Config()
     model_handler = ModelHandler(config)
     embedding_model = model_handler.get_embedding_model()
@@ -107,32 +105,19 @@ def main():
                            transforms.ToTensor()]), data_dir=config.DATA_DIR)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=config.BATCH_SIZE, shuffle=False)
     embeddings = extract_embeddings(dataloader, embedding_model)
-    print("8 ")
     #pca_embeddings, pca = apply_pca(embeddings)
     pca_embeddings = embeddings   
-    image_path = "retrival_files/images/candy.jpg"  # Update this path
-    print("9 ")
     query_image = Image.open(image_path).convert('RGB')
-    print("10 ")
     query_transform = transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor()])
-    print("11 ")
     query_vector = query_transform(query_image).unsqueeze(0).to(config.DEVICE)
-    print("12 ")
     query_embedding = embedding_model(query_vector).detach().cpu().numpy()
-    print("13 ")
     #query_embedding_pca = pca.transform(query_embedding)  # Apply PCA to the query embedding if using PCA embeddings
     query_embedding_pca = query_embedding
-    print("14 ")
     cosine_scores = calculate_cosine_similarity(query_embedding_pca, pca_embeddings)
-    print("15 ")
     covariance_matrix = np.cov(pca_embeddings.T)
-    print("16 ")
     inv_covariance_matrix = np.linalg.inv(covariance_matrix)
-    print("17 ")
     mahalanobis_distances = calculate_mahalanobis_distances(query_embedding_pca.flatten(), pca_embeddings, inv_covariance_matrix)
-    print("18 ")
     euclidean_distances = compute_euclidean_distances(query_embedding_pca.flatten(), pca_embeddings)
-    print("19 ")
     print("Max Cosine Score:")
     print(max(cosine_scores))
     print("Min euclidean_distances:")
