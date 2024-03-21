@@ -1,0 +1,20 @@
+True
+cuda
+8 
+9 
+10 
+11 
+12 
+13 
+14 
+15 
+16 
+17 
+18 
+19 
+Max Cosine Score:
+0.82250476
+Min euclidean_distances:
+18.606382369995117
+Min mahalanobis_distances:
+19005895.402311333
