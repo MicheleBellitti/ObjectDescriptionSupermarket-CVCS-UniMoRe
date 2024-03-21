@@ -1,6 +1,6 @@
 # Training settings
 
-epochs: 100
+epochs: 150
 lr: 0.001
 eps: 0.00000001
 weight_decay: 0.0005
