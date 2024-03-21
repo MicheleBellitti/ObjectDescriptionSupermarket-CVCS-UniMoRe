@@ -1,16 +1,20 @@
-2024-01-23 14:53:21,671 - INFO - Epoch: [0] [0/175] Loss: 5.344271183013916
-2024-01-23 14:53:21,671 - INFO - Epoch: [0] [0/175] Loss: 6.087738037109375
-2024-01-23 14:53:21,671 - INFO - Epoch: [0] [0/175] Loss: 5.407628059387207
-2024-01-23 14:53:21,671 - INFO - Epoch: [0] [0/175] Loss: 5.943689346313477
-2024-01-23 14:53:21,953 - INFO - Reducer buckets have been rebuilt in this iteration.
-2024-01-23 14:53:21,953 - INFO - Reducer buckets have been rebuilt in this iteration.
-2024-01-23 14:53:21,953 - INFO - Reducer buckets have been rebuilt in this iteration.
-2024-01-23 14:53:21,954 - INFO - Reducer buckets have been rebuilt in this iteration.
-2024-01-23 15:03:30,026 - INFO - Epoch: [0] [0/175] Loss: 5.488246917724609
-2024-01-23 15:03:30,026 - INFO - Epoch: [0] [0/175] Loss: 5.578929901123047
-2024-01-23 15:03:30,026 - INFO - Epoch: [0] [0/175] Loss: 5.492766857147217
-2024-01-23 15:03:30,027 - INFO - Epoch: [0] [0/175] Loss: 5.486757278442383
-2024-01-23 15:03:30,556 - INFO - Reducer buckets have been rebuilt in this iteration.
-2024-01-23 15:03:30,556 - INFO - Reducer buckets have been rebuilt in this iteration.
-2024-01-23 15:03:30,557 - INFO - Reducer buckets have been rebuilt in this iteration.
-2024-01-23 15:03:30,557 - INFO - Reducer buckets have been rebuilt in this iteration.
+2024-03-20 16:56:29,648 - INFO - Epoch: [0] [0/175] Loss: 3.3536524772644043
+2024-03-20 16:56:29,648 - INFO - Epoch: [0] [0/175] Loss: 3.111842155456543
+2024-03-20 16:56:29,648 - INFO - Epoch: [0] [0/175] Loss: 3.1937475204467773
+2024-03-20 16:56:29,648 - INFO - Epoch: [0] [0/175] Loss: 3.326049327850342
+2024-03-20 16:56:29,948 - INFO - Reducer buckets have been rebuilt in this iteration.
+2024-03-20 16:56:29,948 - INFO - Reducer buckets have been rebuilt in this iteration.
+2024-03-20 16:56:29,948 - INFO - Reducer buckets have been rebuilt in this iteration.
+2024-03-20 16:56:29,948 - INFO - Reducer buckets have been rebuilt in this iteration.
+2024-03-20 16:59:53,465 - INFO - Epoch: [0] [50/175] Loss: 1.2898098230361938
+2024-03-20 16:59:53,465 - INFO - Epoch: [0] [50/175] Loss: 1.3114820718765259
+2024-03-20 16:59:53,465 - INFO - Epoch: [0] [50/175] Loss: 1.4789228439331055
+2024-03-20 16:59:53,466 - INFO - Epoch: [0] [50/175] Loss: 1.353795051574707
+2024-03-20 17:03:15,626 - INFO - Epoch: [0] [100/175] Loss: 1.127193808555603
+2024-03-20 17:03:15,626 - INFO - Epoch: [0] [100/175] Loss: 1.2131142616271973
+2024-03-20 17:03:15,626 - INFO - Epoch: [0] [100/175] Loss: 1.158220648765564
+2024-03-20 17:03:15,626 - INFO - Epoch: [0] [100/175] Loss: 1.2066911458969116
+2024-03-20 17:06:37,189 - INFO - Epoch: [0] [150/175] Loss: 0.9522305727005005
+2024-03-20 17:06:37,189 - INFO - Epoch: [0] [150/175] Loss: 1.1260428428649902
+2024-03-20 17:06:37,189 - INFO - Epoch: [0] [150/175] Loss: 1.0019782781600952
+2024-03-20 17:06:37,189 - INFO - Epoch: [0] [150/175] Loss: 1.2318599224090576
