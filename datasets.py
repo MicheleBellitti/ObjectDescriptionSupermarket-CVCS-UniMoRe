@@ -29,27 +29,27 @@ std = (0.229, 0.224, 0.225)
 # Define transforms
 TRAIN_TRANSFORM = transforms.Compose([
     transforms.Resize((1024, 1024)),  # Resize the image
-    ##transforms.RandomResizedCrop(800, scale=(0.8, 1.0)),  # Random crop and resize
-    #transforms.RandomHorizontalFlip(p=0.5),  # Random horizontal flip
-    #transforms.RandomVerticalFlip(p=0.5),  # Random vertical flip (optional)
-    #transforms.RandomRotation(15),  # Random rotation by +/- 15 degrees
-    #transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),  # Color jitter
-    #transforms.RandomPerspective(distortion_scale=0.2, p=0.2),  # Random perspective
-    #transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0)),  # Gaussian blur with variable sigma
+    # transforms.RandomResizedCrop(800, scale=(0.8, 1.0)),  # Random crop and resize
+    # transforms.RandomHorizontalFlip(p=0.5),  # Random horizontal flip
+    # transforms.RandomVerticalFlip(p=0.5),  # Random vertical flip (optional)
+    # transforms.RandomRotation(15),  # Random rotation by +/- 15 degrees
+    # transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),  # Color jitter
+    # transforms.RandomPerspective(distortion_scale=0.2, p=0.2),  # Random perspective
+    # transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2.0)),  # Gaussian blur with variable sigma
     transforms.ToTensor(),  # Convert to tensor
     transforms.Normalize(mean=mean, std=std)  # Normalize
 ])
 
 TEST_TRANSFORM = transforms.Compose([
     transforms.Resize((1024, 1024)),  # Resize the image
-    #transforms.CenterCrop(1024),  # Center crop
+    # transforms.CenterCrop(1024),  # Center crop
     transforms.ToTensor(),  # Convert to tensor
     # transforms.Normalize(mean=mean, std=std)  # Normalize
 ])
 
 VAL_TRANSFORM = transforms.Compose([
     transforms.Resize((1024, 1024)),  # Resize the image
-    #transforms.CenterCrop(1024),  # Center crop
+    # transforms.CenterCrop(1024),  # Center crop
     transforms.ToTensor(),  # Convert to tensor
     transforms.Normalize(mean=mean, std=std)  # Normalize
 ])
@@ -73,7 +73,7 @@ class GroceryStoreDataset(Dataset):
 
         classes_file = os.path.join(self.root, "classes.csv")
 
-        self.classes = {'81':'background'}
+        self.classes = {'81': 'background'}
         with open(classes_file, "r") as f:
 
             lines = f.readlines()
@@ -95,7 +95,8 @@ class GroceryStoreDataset(Dataset):
                 line = line.strip()
                 img_path, class_id, coarse_class_id = line.split(",")
                 class_name = self.classes[class_id.strip()]
-                self.samples.append((os.path.join(self.root, img_path), int(self.class_to_idx[class_name])))
+                self.samples.append(
+                    (os.path.join(self.root, img_path), int(self.class_to_idx[class_name])))
 
     def __len__(self):
         return len(self.samples)
@@ -117,7 +118,7 @@ def collate_fn(batch):
     """
     Collate function that pads sequences to the same length.
     """
-    
+
     inputs = [torch.clone(item[0]).detach() for item in batch]
     targets = [torch.clone(item[1]).detach() for item in batch]
 
@@ -126,10 +127,12 @@ def collate_fn(batch):
     # print(inputs_padded.shape, targets_padded.shape)
     return inputs_padded, targets_padded
 
+
 class FreiburgDataset(Dataset):
     def __init__(self, split, data_dir="/work/cvcs_2023_group23/images/", index=1, transform=None):
         self.data_dir = data_dir
-        self.split = split  # split can be 'train', 'test', 'val' or 'full_<training or testing>' for the entire training set
+        # split can be 'train', 'test', 'val' or 'full_<training or testing>' for the entire training set
+        self.split = split
         self.index = index
         self.transform = transform
         self.targets = []
@@ -139,7 +142,7 @@ class FreiburgDataset(Dataset):
     def _load_data(self):
         # Iterate over the split files
         split_file = f"data/{self.split}{self.index}.txt" if 'full' not in self.split else f"data/{self.split}.txt"
-        
+
         with open(split_file, 'r') as file:
             for line in file:
                 image_path, label = line.strip().split()
@@ -149,14 +152,12 @@ class FreiburgDataset(Dataset):
 
     def __len__(self):
         return len(self.image_labels)
-       
 
     def __getitem__(self, idx):
         image_path, label = self.image_labels[idx]
         image = Image.open(image_path).convert("RGB")
         tensor_image = ToTensor()(image)
         return tensor_image, label
-    
 
 
 class ShelvesDataset(Dataset):
@@ -167,7 +168,8 @@ class ShelvesDataset(Dataset):
     def __init__(self, transform=None, max_num_boxes=10):
         super(ShelvesDataset, self).__init__()
 
-        self.root = os.path.join("Datasets", "Supermarket+shelves", "Supermarket shelves", "Supermarket shelves")
+        self.root = os.path.join(
+            "Datasets", "Supermarket+shelves", "Supermarket shelves", "Supermarket shelves")
         self.transform = transform
         self.num_files = len(os.listdir(os.path.join(self.root, "images")))
         self.max_num_boxes = max_num_boxes
@@ -209,8 +211,8 @@ class ShelvesDataset(Dataset):
                     x2 = float(obj["points"]["exterior"][1][0]) - x1
                     y2 = float(obj["points"]["exterior"][1][1]) - y1
                     # write the line in the txt file
-                    f.write(f"{class_id} {x1/width} {y1/height} {x2/width} {y2/height}\n")
-
+                    f.write(
+                        f"{class_id} {x1/width} {y1/height} {x2/width} {y2/height}\n")
 
     def __len__(self):
         return self.num_files
@@ -261,12 +263,12 @@ class ShelvesDataset(Dataset):
         annotation_path = os.path.join(self.root, "labels")
         annotation_filenames = os.listdir(annotation_path)
 
-
         for annotation_filename in annotation_filenames:
             with open(os.path.join(annotation_path, annotation_filename)) as f:
                 lines = f.readlines()
             with open(os.path.join(annotation_path, annotation_filename), "w") as f:
-                height, width = Image.open(os.path.join(self.root, "images", annotation_filename[:-3] + "jpg")).size
+                height, width = Image.open(os.path.join(
+                    self.root, "images", annotation_filename[:-3] + "jpg")).size
                 for line in lines:
                     class_id, x1, y1, x2, y2 = line.strip().split()
                     '''x1 = float(x1) / width
@@ -275,6 +277,7 @@ class ShelvesDataset(Dataset):
                     y2 = float(abs(y1 - int(y2))) / height
                     f.write(f"{class_id} {x1} {y1} {x2} {y2}\n")'''
                     print(x1, y1, x2, y2)
+
 
 def pad_boxes(boxes_list, pad_length):
     # pad the list with zeros if its length is less than the pad_length
@@ -292,6 +295,7 @@ def pad_labels(labels, max_num_boxes):
         labels.append(0)
     return labels
 
+
 class SKUDataset(Dataset):
 
     def __init__(self, split='train', transform=None):
@@ -300,15 +304,14 @@ class SKUDataset(Dataset):
         self.annotations_dir = os.path.join(self.root_dir, 'annotations')
         self.split = split
         self.transform = transform
-        
 
         # Load annotations CSV file
-        annotations_file = os.path.join(self.annotations_dir, f'annotations_{self.split}.csv')
-        self.annotations_df = (pd.read_csv(annotations_file) if self.split == 'train' else pd.read_csv(annotations_file)[:50000])
+        annotations_file = os.path.join(
+            self.annotations_dir, f'annotations_{self.split}.csv')
+        self.annotations_df = (pd.read_csv(
+            annotations_file) if self.split == 'train' else pd.read_csv(annotations_file)[:50000])
         self.image_names = self.annotations_df.image_name.unique()
         # print(len(self.image_names))
-        
-        
 
     def __len__(self):
         return len(self.image_names)
@@ -320,9 +323,9 @@ class SKUDataset(Dataset):
         # Get all rows for the specific image
         image_name = self.image_names[idx]
         image_rows = self.annotations_df[self.annotations_df['image_name'] == image_name]
-        
+
         img_path = os.path.join(self.images_dir, image_name)
-        
+
         rows = list(image_rows.iterrows())
         width, height = rows[0][1]["image_width"], rows[0][1]["image_height"]
         try:
@@ -333,7 +336,7 @@ class SKUDataset(Dataset):
             error_log_path = 'corrupted_images.log'
             with open(error_log_path, 'a') as f:
                 f.write(f"Corrupted image: {img_path}\n")
-        
+
         for _, row in image_rows.iterrows():
             x1 = row['x1']
             y1 = row['y1']
@@ -342,11 +345,11 @@ class SKUDataset(Dataset):
             class_id = row['class']
             image_width = row['image_width']
             image_height = row['image_height']
-            
+
             x1, x2 = min(x1, x2), max(x1, x2)
-            
+
             y1, y2 = min(y1, y2), max(y1, y2)
-            
+
             class_id = 1 if class_id == "object" else 0
 
             # Scale annotations according to the resized image
@@ -356,8 +359,9 @@ class SKUDataset(Dataset):
             y2 = y2 / image_height * 1024
 
             # Append annotation to the list
-            image_annotations.append([x1, y1, x2, y2, class_id, image_width, image_height])
-        
+            image_annotations.append(
+                [x1, y1, x2, y2, class_id, image_width, image_height])
+
         # Convert annotations to tensors
         x1 = torch.tensor([annot[0] for annot in image_annotations])
         y1 = torch.tensor([annot[1] for annot in image_annotations])
@@ -370,11 +374,9 @@ class SKUDataset(Dataset):
         # Apply transformation if available to the image
         if self.transform and image:
             image = self.transform(image)
-        
 
         return image, x1, y1, x2, y2, class_ids, image_widths, image_heights
 
-    
 
 def custom_collate_fn(batch):
     """
@@ -387,7 +389,8 @@ def custom_collate_fn(batch):
         A batch of data that is ready to be passed to the model.
     """
 
-    images, x1_tuple, y1_tuple, x2_tuple, y2_tuple, class_ids, image_widths, image_heights = zip(*batch)
+    images, x1_tuple, y1_tuple, x2_tuple, y2_tuple, class_ids, image_widths, image_heights = zip(
+        *batch)
 
     # Pad sequences to the maximum length in the batch
     x1_padded = pad_sequence(x1_tuple, batch_first=True, padding_value=0)
@@ -395,16 +398,16 @@ def custom_collate_fn(batch):
     x2_padded = pad_sequence(x2_tuple, batch_first=True, padding_value=1)
     y2_padded = pad_sequence(y2_tuple, batch_first=True, padding_value=1)
     class_ids = pad_sequence(class_ids, batch_first=True, padding_value=0)
-    image_widths = pad_sequence(image_widths, batch_first=True, padding_value=320)
-    image_heights = pad_sequence(image_heights, batch_first=True, padding_value=320)
+    image_widths = pad_sequence(
+        image_widths, batch_first=True, padding_value=320)
+    image_heights = pad_sequence(
+        image_heights, batch_first=True, padding_value=320)
 
     # Convert tensors to a torch.Tensor
     images = torch.stack(images)
-    
 
     return images, x1_padded, y1_padded, x2_padded, y2_padded, class_ids, image_widths, image_heights
-                
-                
+
 
 class SKUDatasetGPU(Dataset):
 
@@ -416,17 +419,18 @@ class SKUDatasetGPU(Dataset):
         self.transform = transform
 
         # Load annotations CSV file
-        annotations_file = os.path.join(self.annotations_dir, f'annotations_{self.split}.csv')
+        annotations_file = os.path.join(
+            self.annotations_dir, f'annotations_{self.split}.csv')
         self.annotations_df = pd.read_csv(annotations_file, header=None)
 
         self.image_lock = threading.Lock()  # Add the lock
 
     def __len__(self):
         return len(self.annotations_df)
-    
+
     def classes(self):
         return self.annotations_df.iloc[:, 5].unique()
-    
+
     def num_classes(self):
         return self.classes().shape[0]
 
@@ -448,27 +452,31 @@ class SKUDatasetGPU(Dataset):
 
         # Load image
         img_path = os.path.join(self.images_dir, img_name)
-        
+
         with self.image_lock:  # Use the lock around image loading
             try:
                 image = Image.open(img_path).convert('RGB')
             except Exception as e:
                 print(f"Error loading image {img_path}: {e}")
                 # Return a placeholder image and targets
-                image = Image.new('RGB', (256, 256))  # Create a placeholder image
-                targets = {'boxes': torch.tensor([], dtype=torch.float32), 'labels': torch.tensor([], dtype=torch.int64)}
+                # Create a placeholder image
+                image = Image.new('RGB', (256, 256))
+                targets = {'boxes': torch.tensor(
+                    [], dtype=torch.float32), 'labels': torch.tensor([], dtype=torch.int64)}
                 return image, targets
 
         # Apply transformation if available
         if self.transform:
             image = self.transform(image)
 
-        boxes = torch.tensor([[x1, y1, x2, y2]], dtype=torch.float32) if class_id != -1 else torch.tensor([])
-        labels = torch.tensor([class_id], dtype=torch.int64) if class_id != -1 else torch.tensor([])
+        boxes = torch.tensor(
+            [[x1, y1, x2, y2]], dtype=torch.float32) if class_id != -1 else torch.tensor([])
+        labels = torch.tensor(
+            [class_id], dtype=torch.int64) if class_id != -1 else torch.tensor([])
 
         targets = {'boxes': boxes, 'labels': labels}
 
         # print(f"Image shape: {image.shape}")
-        # print(f"Targets: {targets}")    
-        
+        # print(f"Targets: {targets}")
+
         return image, targets

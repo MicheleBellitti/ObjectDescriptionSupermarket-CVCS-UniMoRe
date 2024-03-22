@@ -1,0 +1,68 @@
+True
+device: cuda
+True
+device: cudaTrue
+
+device:True 
+cudadevice:
+ cuda
+[31mPlease check your arguments if you have upgraded adabelief-pytorch from version 0.0.5.
+[31mModifications to default arguments:
+[31m                           eps  weight_decouple    rectify
+-----------------------  -----  -----------------  ---------
+adabelief-pytorch=0.0.5  1e-08  False              False
+>=0.1.0 (Current 0.2.0)  1e-16  True               True
+[34mSGD better than Adam (e.g. CNN for Image Classification)    Adam better than SGD (e.g. Transformer, GAN)
+----------------------------------------------------------  ----------------------------------------------
+Recommended eps = 1e-8                                      Recommended eps = 1e-16[31mPlease check your arguments if you have upgraded adabelief-pytorch from version 0.0.5.
+[31mPlease check your arguments if you have upgraded adabelief-pytorch from version 0.0.5.
+
+[34mFor a complete table of recommended hyperparameters, see[31mModifications to default arguments:
+[31mModifications to default arguments:
+
+[31mPlease check your arguments if you have upgraded adabelief-pytorch from version 0.0.5.[34mhttps://github.com/juntang-zhuang/Adabelief-Optimizer
+[31m                           eps  weight_decouple    rectify
+-----------------------  -----  -----------------  ---------
+adabelief-pytorch=0.0.5  1e-08  False              False
+>=0.1.0 (Current 0.2.0)  1e-16  True               True
+
+[31mModifications to default arguments:[31m                           eps  weight_decouple    rectify
+-----------------------  -----  -----------------  ---------
+adabelief-pytorch=0.0.5  1e-08  False              False
+>=0.1.0 (Current 0.2.0)  1e-16  True               True[32mYou can disable the log message by setting "print_change_log = False", though it is recommended to keep as a reminder.
+[34mSGD better than Adam (e.g. CNN for Image Classification)    Adam better than SGD (e.g. Transformer, GAN)
+----------------------------------------------------------  ----------------------------------------------
+Recommended eps = 1e-8                                      Recommended eps = 1e-16
+
+[0m
+
+[34mSGD better than Adam (e.g. CNN for Image Classification)    Adam better than SGD (e.g. Transformer, GAN)
+----------------------------------------------------------  ----------------------------------------------
+Recommended eps = 1e-8                                      Recommended eps = 1e-16
+[31m                           eps  weight_decouple    rectify
+-----------------------  -----  -----------------  ---------
+adabelief-pytorch=0.0.5  1e-08  False              False
+>=0.1.0 (Current 0.2.0)  1e-16  True               True
+[34mFor a complete table of recommended hyperparameters, see[34mFor a complete table of recommended hyperparameters, see
+Weight decoupling enabled in AdaBelief
+[34mSGD better than Adam (e.g. CNN for Image Classification)    Adam better than SGD (e.g. Transformer, GAN)
+----------------------------------------------------------  ----------------------------------------------
+Recommended eps = 1e-8                                      Recommended eps = 1e-16[34mhttps://github.com/juntang-zhuang/Adabelief-Optimizer
+
+[34mhttps://github.com/juntang-zhuang/Adabelief-Optimizer
+[32mYou can disable the log message by setting "print_change_log = False", though it is recommended to keep as a reminder.Rectification enabled in AdaBelief
+
+[32mYou can disable the log message by setting "print_change_log = False", though it is recommended to keep as a reminder.[34mFor a complete table of recommended hyperparameters, see
+
+
+[0m[0m[34mhttps://github.com/juntang-zhuang/Adabelief-Optimizer
+
+
+[32mYou can disable the log message by setting "print_change_log = False", though it is recommended to keep as a reminder.
+Weight decoupling enabled in AdaBelief
+Weight decoupling enabled in AdaBelief[0mRectification enabled in AdaBelief
+
+
+Rectification enabled in AdaBelief
+Weight decoupling enabled in AdaBelief
+Rectification enabled in AdaBelief
