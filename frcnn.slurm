@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --partition=all_serial
+#SBATCH --partition=all_usr_prod
 #SBATCH --account=ai4bio2023
 #SBATCH --time=03:00:00
 #SBATCH --gres=gpu:4
@@ -21,7 +21,7 @@ then
     --master_port=12346 \
     train.py --config config.yaml --log_dir logs --model frcnn --verbose --resume_checkpoint checkpoints/frcnn/checkpoint.pth
 else
-    python -m torch.distributed.run \
+    python -u -m torch.distributed.run \
     --nproc_per_node=4 \
     --nnodes=${SLURM_NNODES} \
     --node_rank=${SLURM_NODEID} \
@@ -31,7 +31,7 @@ else
 fi
 # Test
 
-python -m torch.distributed.run \
+python -u -m torch.distributed.run \
     --nproc_per_node=4 \
     --nnodes=${SLURM_NNODES} \
     --node_rank=${SLURM_NODEID} \
