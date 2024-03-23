@@ -40,8 +40,8 @@ from utils import calculate_mAP, find_jaccard_overlap
 # Supports SSD, Faster R-CNN and RetinaNet models. Can run distributed evaluation using multiple GPUs.
 
 # Constants
-CONFIDENCE_THRESHOLD = 0.50
-NMS_THRESHOLD = 0.15
+CONFIDENCE_THRESHOLD = 0.70
+NMS_THRESHOLD = 0.3
 
 dominant_colors = []
 color_names = []
@@ -171,8 +171,7 @@ def test(model, test_dataloader, device, log_dir):
     with torch.no_grad():
         all_outputs, all_true_boxes, all_true_labels = [], [], []
         for idx, (images, x1, y1, x2, y2, class_id, image_width, image_height) in enumerate(test_dataloader):
-            if idx >= 5:
-                break
+            
             images = images.to(device)
             outputs = model(images)
             
@@ -240,19 +239,6 @@ def visualize_and_save_metrics(outputs, true_boxes, true_labels, log_dir):
     ax = sns.barplot(x="Class", y="Average Precision", data=ap_df)
     plt.title(f"Mean Average Precision (mAP): {mean_ap:.4f}")
     plt.savefig(os.path.join(plot_dir, "mAP_visualization.png"))
-    plt.close()
-
-    # Colors Distribution
-    df = pd.DataFrame({"Color": color_names, "RGB": dominant_colors})
-    plt.figure(figsize=(10, 6))
-    sns.histplot(x="RGB", y="Color" , data=df, kde=True, cbar=True)
-    
-    plt.title("Distribution of Dominant Colors")
-    plt.xlabel("Frequency")
-    plt.ylabel("Color Name")
-
-    # Save the plot
-    plt.savefig(os.path.join(plot_dir, "colors_distribution.png"))
     plt.close()
 
     # IoU Distribution

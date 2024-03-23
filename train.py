@@ -470,11 +470,11 @@ def main():
     # Optimizer and scheduler
     # Applying linear scaling rule to learning rate in case of multi-gpu training
     num_devices = torch.cuda.device_count()
-    scaled_lr = config["lr"] * num_devices
+    lr = config["lr"]
     # optimizer = SGD(model.parameters(), lr=config['lr'], weight_decay=config["weight_decay"], momentum=config["momentum"])
     # optimizer = torch.optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config['weight_decay'])
     optimizer = AdaBelief(model.parameters(
-    ), lr=scaled_lr, eps=1e-8, betas=(0.9, 0.999), weight_decay=config['weight_decay'], rectify=False)
+    ), lr=lr, eps=1e-8, betas=(0.9, 0.999), weight_decay=config['weight_decay'])
 
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
     # lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['epochs'])
