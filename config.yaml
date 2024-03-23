@@ -1,9 +1,9 @@
 # Training settings
 
-epochs: 150
+epochs: 100
 lr: 0.001
 eps: 0.00000001
-weight_decay: 0.0005
+weight_decay: 0.0001
 momentum: 0.9
 gamma: 0.1
 batch_size: 8

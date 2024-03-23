@@ -468,13 +468,15 @@ def main():
     )
 
     # Optimizer and scheduler
-
+    # Applying linear scaling rule to learning rate in case of multi-gpu training
+    num_devices = torch.cuda.device_count()
+    scaled_lr = config["lr"] * num_devices
     # optimizer = SGD(model.parameters(), lr=config['lr'], weight_decay=config["weight_decay"], momentum=config["momentum"])
     # optimizer = torch.optim.AdamW(model.parameters(), lr=config["lr"], weight_decay=config['weight_decay'])
     optimizer = AdaBelief(model.parameters(
-    ), lr=config['lr'], eps=1e-8, betas=(0.9, 0.999), weight_decay=config['weight_decay'])
+    ), lr=scaled_lr, eps=1e-8, betas=(0.9, 0.999), weight_decay=config['weight_decay'], rectify=False)
 
-    #  lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
+    # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
     # lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=config['epochs'])
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode='min', factor=0.1, patience=5, verbose=True, cooldown=0, min_lr=0.0)
@@ -493,7 +495,7 @@ def main():
             "Resuming from checkpoint at epoch {}".format(start_epoch))
     else:
         start_epoch = 0
-    lr_scheduler.eps = 1e-8
+    # lr_scheduler.eps = 1e-8
     # Training loop
     for epoch in range(start_epoch, config["epochs"]):
         train_sampler.set_epoch(epoch)
