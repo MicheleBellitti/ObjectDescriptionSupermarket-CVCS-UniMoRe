@@ -7,3 +7,6 @@
 ./*.log
 ./session_name.txt
 ./checkpoints
+__pycache__/
+checkpoints/
+freiburg/
