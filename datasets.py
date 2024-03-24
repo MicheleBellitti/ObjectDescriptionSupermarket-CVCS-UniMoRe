@@ -41,7 +41,7 @@ TRAIN_TRANSFORM = transforms.Compose([
 ])
 
 TEST_TRANSFORM = transforms.Compose([
-    transforms.Resize((1024, 1024)),  # Resize the image
+    transforms.Resize((1920, 1080)),  # Resize the image
     # transforms.CenterCrop(1024),  # Center crop
     transforms.ToTensor(),  # Convert to tensor
     # transforms.Normalize(mean=mean, std=std)  # Normalize

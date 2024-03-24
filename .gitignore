@@ -1,12 +1,6 @@
-./Datasets
-./yolov5
-./train_results
-./logs
-./vscode
-./*.pth
-./*.log
-./session_name.txt
-./checkpoints
+vscode/
 __pycache__/
+pytest_cache/
 checkpoints/
 freiburg/
+train_results/clf_densenet121/*.jpg
