@@ -1,30 +1,29 @@
-# Import necessary libraries
-import torch
-from torchvision import transforms
-from torchvision.utils import save_image
-from torch.utils.data import DataLoader
-import json
-
+# Core libraries
 import os
+import argparse
+from PIL import Image
+import json
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
+
+# PyTorch Lightning
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, RichProgressBar
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-from torchvision import transforms
 
-import argparse
-from PIL import Image
-import numpy as np
+# Torchvision
 from torchvision import transforms, models
-from torch.utils.data import DataLoader, Dataset, random_split
-import torch
-import torch.nn as nn
-import torch.optim as optim
+from torchvision.utils import save_image
+
+# Visualization & Metrics
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import precision_recall_curve, f1_score, confusion_matrix
-
 
 # Include the GroceryDataModule and LitModel class definitions from your code snippet here
 
@@ -36,7 +35,7 @@ class GroceryStoreDataset(Dataset):
     # - root/train.txt
     # - root/test.txt
     # - root/val.txt
-    def __init__(self, split='train', transform=None):
+    def __init__(self, split='test', transform=None):
         super(GroceryStoreDataset, self).__init__()
         self.root = "/work/cvcs_2023_group23/GroceryStoreDataset/dataset/"
         self.split = split
@@ -47,7 +46,7 @@ class GroceryStoreDataset(Dataset):
 
         classes_file = os.path.join(self.root, "classes.csv")
 
-        self.classes = {'81': 'background'}
+        self.classes = {'42': 'background'}
         with open(classes_file, "r") as f:
 
             lines = f.readlines()
@@ -88,7 +87,7 @@ class GroceryStoreDataset(Dataset):
         return self._descriptions[class_name]
 
 class GroceryDataModule(pl.LightningDataModule):
-    def __init__(self, batch_size=32, data_dir="/work/cvcs_2023_group23/GroceryStoreDataset/dataset/"):
+    def __init__(self, batch_size, data_dir):
         super().__init__()
         self.batch_size = batch_size
         self.data_dir = data_dir
@@ -98,21 +97,33 @@ class GroceryDataModule(pl.LightningDataModule):
             transforms.ToTensor(),
             # Consider adding normalization if necessary
         ])
-        self.groceery_train, self.grocery_test, self.grocery_val = None, None, None
+        self.grocery_train, self.grocery_test, self.grocery_val = None, None, None
 
     def setup(self, stage=None):
         # Assign training/validation datasets for use in dataloaders
         if stage == 'fit' or stage is None:
             self.grocery_train = GroceryStoreDataset(split='train', transform=self.transform)
+            self.class_weights = self.calculate_class_weights()
             self.grocery_val = GroceryStoreDataset(split='val', transform=self.transform)
 
         # Assign test dataset for use in dataloader(s)
         if stage == 'test' or stage is None:
             self.grocery_test = GroceryStoreDataset(split='test', transform=self.transform)
+    
+    def calculate_class_weights(self):
+        # Count the number of instances of each class
+        class_counts = torch.zeros(43)
+        for _, label in self.grocery_train:
+            class_counts[label] += 1
+        # Inverse of counts to get weights
+        class_weights = 1. / class_counts
+        return class_weights
 
     def train_dataloader(self):
-        return DataLoader(self.grocery_train, batch_size=self.batch_size, shuffle=True)
-
+            sample_weights = [self.class_weights[label] for _, label in self.grocery_train]
+            weighted_sampler = WeightedRandomSampler(weights=sample_weights, num_samples=len(sample_weights), replacement=True)
+            return DataLoader(self.grocery_train, batch_size=self.batch_size, sampler=weighted_sampler)
+    
     def val_dataloader(self):
         return DataLoader(self.grocery_val, batch_size=self.batch_size)
 
@@ -120,10 +131,19 @@ class GroceryDataModule(pl.LightningDataModule):
         return DataLoader(self.grocery_test, batch_size=self.batch_size)
 
 class LitModel(pl.LightningModule):
-    def __init__(self, num_classes=82, learning_rate=1e-3):
+    def __init__(self, num_classes=43, learning_rate=1e-3):
         super().__init__()
+        # for param in self.model.parameters():
+        #     param.requires_grad = False
+        
         self.model = models.densenet121(pretrained=True)
-        self.model.classifier = nn.Linear(1024, num_classes)
+        num_ftrs = self.model.classifier.in_features  # Get the number of features of the last layer
+        self.model.classifier = nn.Linear(num_ftrs, num_classes)  # Update classifier
+                
+        # Make sure the classifier parameters are set to require gradients
+        # for param in self.model.classifier.parameters():
+        #     param.requires_grad = True
+        
         self.criterion = nn.CrossEntropyLoss()
         self.learning_rate = learning_rate
 
