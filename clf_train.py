@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import precision_recall_curve, f1_score, confusion_matrix
 
-# Include the GroceryDataModule and LitModel class definitions from your code snippet here
 
 class GroceryStoreDataset(Dataset):
 
@@ -113,10 +112,18 @@ class GroceryDataModule(pl.LightningDataModule):
         return DataLoader(self.grocery_test, batch_size=self.batch_size)
 
 class LitModel(pl.LightningModule):
-    def __init__(self, num_classes=82, learning_rate=1e-3):
+    def __init__(self, num_classes=42, learning_rate=1e-3):
         super().__init__()
-        self.model = models.densenet121(pretrained=True)
+        # for param in self.model.parameters():
+        #     param.requires_grad = False
+        
+        
         self.model.classifier = nn.Linear(1024, num_classes)
+        
+        # Make sure the classifier parameters are set to require gradients
+        # for param in self.model.classifier.parameters():
+        #     param.requires_grad = True
+        
         self.criterion = nn.CrossEntropyLoss()
         self.learning_rate = learning_rate
 
@@ -171,10 +178,10 @@ class LitModel(pl.LightningModule):
 
 print("Starting clf_train.py \n")
 
-# Set constants for the script
+# Set constants
 EPOCHS = 40
 BATCH_SIZE = 64
-NUM_CLASSES = 82  # Update this based on your dataset
+NUM_CLASSES = 42  # Update this based on your dataset
 DATA_DIR = "/work/cvcs_2023_group23/GroceryStoreDataset/dataset/"  # Update this path
 CHECKPOINT_DIR = "checkpoints/clf_densetnet121/240324/40Epochs/"  # Update this path
 
