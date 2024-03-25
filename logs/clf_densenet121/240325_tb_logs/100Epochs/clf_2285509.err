@@ -1,0 +1,125 @@
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=DenseNet121_Weights.IMAGENET1K_V1`. You can also use `weights=DenseNet121_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+/homes/sbghosh/.local/lib/python3.9/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:441: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=5` in the `DataLoader` to improve performance.
+/homes/sbghosh/.local/lib/python3.9/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:441: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=5` in the `DataLoader` to improve performance.
+Epoch 0, global step 42: 'val_loss' reached 0.85509 (best 0.85509), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/100Epochs/epoch=0-val_loss=0.86.ckpt' as top 1
+Epoch 1, global step 84: 'val_loss' reached 0.51007 (best 0.51007), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/100Epochs/epoch=1-val_loss=0.51.ckpt' as top 1
+Epoch 2, global step 126: 'val_loss' was not in top 1
+Epoch 3, global step 168: 'val_loss' was not in top 1
+Epoch 4, global step 210: 'val_loss' reached 0.46368 (best 0.46368), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/100Epochs/epoch=4-val_loss=0.46.ckpt' as top 1
+Epoch 5, global step 252: 'val_loss' was not in top 1
+Epoch 6, global step 294: 'val_loss' reached 0.40535 (best 0.40535), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/100Epochs/epoch=6-val_loss=0.41.ckpt' as top 1
+Epoch 7, global step 336: 'val_loss' reached 0.40024 (best 0.40024), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/100Epochs/epoch=7-val_loss=0.40.ckpt' as top 1
+Epoch 8, global step 378: 'val_loss' reached 0.36567 (best 0.36567), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/100Epochs/epoch=8-val_loss=0.37.ckpt' as top 1
+Epoch 9, global step 420: 'val_loss' reached 0.35186 (best 0.35186), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/100Epochs/epoch=9-val_loss=0.35.ckpt' as top 1
+Epoch 10, global step 462: 'val_loss' was not in top 1
+Epoch 11, global step 504: 'val_loss' was not in top 1
+Epoch 12, global step 546: 'val_loss' was not in top 1
+Epoch 13, global step 588: 'val_loss' was not in top 1
+Epoch 14, global step 630: 'val_loss' was not in top 1
+Epoch 15, global step 672: 'val_loss' was not in top 1
+Epoch 16, global step 714: 'val_loss' was not in top 1
+Epoch 17, global step 756: 'val_loss' was not in top 1
+Epoch 18, global step 798: 'val_loss' was not in top 1
+Epoch 19, global step 840: 'val_loss' was not in top 1
+Epoch 20, global step 882: 'val_loss' was not in top 1
+Epoch 21, global step 924: 'val_loss' was not in top 1
+Epoch 22, global step 966: 'val_loss' was not in top 1
+Epoch 23, global step 1008: 'val_loss' was not in top 1
+Epoch 24, global step 1050: 'val_loss' was not in top 1
+Epoch 25, global step 1092: 'val_loss' was not in top 1
+Epoch 26, global step 1134: 'val_loss' was not in top 1
+Epoch 27, global step 1176: 'val_loss' was not in top 1
+Epoch 28, global step 1218: 'val_loss' was not in top 1
+Epoch 29, global step 1260: 'val_loss' was not in top 1
+Epoch 30, global step 1302: 'val_loss' was not in top 1
+Epoch 31, global step 1344: 'val_loss' was not in top 1
+Epoch 32, global step 1386: 'val_loss' was not in top 1
+Epoch 33, global step 1428: 'val_loss' was not in top 1
+Epoch 34, global step 1470: 'val_loss' was not in top 1
+Epoch 35, global step 1512: 'val_loss' was not in top 1
+Epoch 36, global step 1554: 'val_loss' was not in top 1
+Epoch 37, global step 1596: 'val_loss' was not in top 1
+Epoch 38, global step 1638: 'val_loss' was not in top 1
+Epoch 39, global step 1680: 'val_loss' was not in top 1
+Epoch 40, global step 1722: 'val_loss' was not in top 1
+Epoch 41, global step 1764: 'val_loss' was not in top 1
+Epoch 42, global step 1806: 'val_loss' was not in top 1
+Epoch 43, global step 1848: 'val_loss' was not in top 1
+Epoch 44, global step 1890: 'val_loss' was not in top 1
+Epoch 45, global step 1932: 'val_loss' was not in top 1
+Epoch 46, global step 1974: 'val_loss' was not in top 1
+Epoch 47, global step 2016: 'val_loss' was not in top 1
+Epoch 48, global step 2058: 'val_loss' was not in top 1
+Epoch 49, global step 2100: 'val_loss' was not in top 1
+Epoch 50, global step 2142: 'val_loss' was not in top 1
+Epoch 51, global step 2184: 'val_loss' was not in top 1
+Epoch 52, global step 2226: 'val_loss' was not in top 1
+Epoch 53, global step 2268: 'val_loss' was not in top 1
+Epoch 54, global step 2310: 'val_loss' was not in top 1
+Epoch 55, global step 2352: 'val_loss' was not in top 1
+Epoch 56, global step 2394: 'val_loss' was not in top 1
+Epoch 57, global step 2436: 'val_loss' was not in top 1
+Epoch 58, global step 2478: 'val_loss' was not in top 1
+Epoch 59, global step 2520: 'val_loss' was not in top 1
+Epoch 60, global step 2562: 'val_loss' was not in top 1
+Epoch 61, global step 2604: 'val_loss' was not in top 1
+Epoch 62, global step 2646: 'val_loss' was not in top 1
+Epoch 63, global step 2688: 'val_loss' was not in top 1
+Epoch 64, global step 2730: 'val_loss' was not in top 1
+Epoch 65, global step 2772: 'val_loss' was not in top 1
+Epoch 66, global step 2814: 'val_loss' was not in top 1
+Epoch 67, global step 2856: 'val_loss' was not in top 1
+Epoch 68, global step 2898: 'val_loss' was not in top 1
+Epoch 69, global step 2940: 'val_loss' was not in top 1
+Epoch 70, global step 2982: 'val_loss' was not in top 1
+Epoch 71, global step 3024: 'val_loss' was not in top 1
+Epoch 72, global step 3066: 'val_loss' was not in top 1
+Epoch 73, global step 3108: 'val_loss' was not in top 1
+Epoch 74, global step 3150: 'val_loss' was not in top 1
+Epoch 75, global step 3192: 'val_loss' was not in top 1
+Epoch 76, global step 3234: 'val_loss' was not in top 1
+Epoch 77, global step 3276: 'val_loss' was not in top 1
+Epoch 78, global step 3318: 'val_loss' was not in top 1
+Epoch 79, global step 3360: 'val_loss' was not in top 1
+Epoch 80, global step 3402: 'val_loss' was not in top 1
+Epoch 81, global step 3444: 'val_loss' was not in top 1
+Epoch 82, global step 3486: 'val_loss' was not in top 1
+Epoch 83, global step 3528: 'val_loss' was not in top 1
+Epoch 84, global step 3570: 'val_loss' was not in top 1
+Epoch 85, global step 3612: 'val_loss' was not in top 1
+Epoch 86, global step 3654: 'val_loss' was not in top 1
+Epoch 87, global step 3696: 'val_loss' was not in top 1
+Epoch 88, global step 3738: 'val_loss' was not in top 1
+Epoch 89, global step 3780: 'val_loss' was not in top 1
+Epoch 90, global step 3822: 'val_loss' was not in top 1
+Epoch 91, global step 3864: 'val_loss' was not in top 1
+Epoch 92, global step 3906: 'val_loss' was not in top 1
+Epoch 93, global step 3948: 'val_loss' was not in top 1
+Epoch 94, global step 3990: 'val_loss' was not in top 1
+Epoch 95, global step 4032: 'val_loss' was not in top 1
+Epoch 96, global step 4074: 'val_loss' was not in top 1
+Epoch 97, global step 4116: 'val_loss' was not in top 1
+Epoch 98, global step 4158: 'val_loss' was not in top 1
+Epoch 99, global step 4200: 'val_loss' was not in top 1
+`Trainer.fit` stopped: `max_epochs=100` reached.
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=DenseNet121_Weights.IMAGENET1K_V1`. You can also use `weights=DenseNet121_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/clf_evaluate.py:70: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+  plt.figure(figsize=(6, 4))

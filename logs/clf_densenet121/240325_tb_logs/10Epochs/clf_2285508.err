@@ -1,0 +1,35 @@
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=DenseNet121_Weights.IMAGENET1K_V1`. You can also use `weights=DenseNet121_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+/homes/sbghosh/.local/lib/python3.9/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:441: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=5` in the `DataLoader` to improve performance.
+/homes/sbghosh/.local/lib/python3.9/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:441: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=5` in the `DataLoader` to improve performance.
+Epoch 0, global step 42: 'val_loss' reached 0.80295 (best 0.80295), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/10Epochs/epoch=0-val_loss=0.80.ckpt' as top 1
+Epoch 1, global step 84: 'val_loss' reached 0.62397 (best 0.62397), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/10Epochs/epoch=1-val_loss=0.62.ckpt' as top 1
+Epoch 2, global step 126: 'val_loss' was not in top 1
+Epoch 3, global step 168: 'val_loss' reached 0.59364 (best 0.59364), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/10Epochs/epoch=3-val_loss=0.59.ckpt' as top 1
+Epoch 4, global step 210: 'val_loss' reached 0.45624 (best 0.45624), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/10Epochs/epoch=4-val_loss=0.46.ckpt' as top 1
+Epoch 5, global step 252: 'val_loss' reached 0.44009 (best 0.44009), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/10Epochs/epoch=5-val_loss=0.44.ckpt' as top 1
+Epoch 6, global step 294: 'val_loss' was not in top 1
+Epoch 7, global step 336: 'val_loss' was not in top 1
+Epoch 8, global step 378: 'val_loss' reached 0.39143 (best 0.39143), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/10Epochs/epoch=8-val_loss=0.39.ckpt' as top 1
+Epoch 9, global step 420: 'val_loss' reached 0.36652 (best 0.36652), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/10Epochs/epoch=9-val_loss=0.37.ckpt' as top 1
+`Trainer.fit` stopped: `max_epochs=10` reached.
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=DenseNet121_Weights.IMAGENET1K_V1`. You can also use `weights=DenseNet121_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/clf_evaluate.py:70: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+  plt.figure(figsize=(6, 4))

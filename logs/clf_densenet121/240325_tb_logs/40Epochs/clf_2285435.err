@@ -1,0 +1,63 @@
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=DenseNet121_Weights.IMAGENET1K_V1`. You can also use `weights=DenseNet121_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+Epoch 0, global step 42: 'val_loss' reached 0.75240 (best 0.75240), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=0-val_loss=0.75.ckpt' as top 1
+Epoch 1, global step 84: 'val_loss' reached 0.41158 (best 0.41158), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=1-val_loss=0.41.ckpt' as top 1
+Epoch 2, global step 126: 'val_loss' was not in top 1
+Epoch 3, global step 168: 'val_loss' reached 0.40637 (best 0.40637), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=3-val_loss=0.41.ckpt' as top 1
+Epoch 4, global step 210: 'val_loss' was not in top 1
+Epoch 5, global step 252: 'val_loss' was not in top 1
+Epoch 6, global step 294: 'val_loss' reached 0.40360 (best 0.40360), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=6-val_loss=0.40.ckpt' as top 1
+Epoch 7, global step 336: 'val_loss' reached 0.34694 (best 0.34694), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=7-val_loss=0.35.ckpt' as top 1
+Epoch 8, global step 378: 'val_loss' was not in top 1
+Epoch 9, global step 420: 'val_loss' reached 0.33515 (best 0.33515), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=9-val_loss=0.34.ckpt' as top 1
+Epoch 10, global step 462: 'val_loss' was not in top 1
+Epoch 11, global step 504: 'val_loss' was not in top 1
+Epoch 12, global step 546: 'val_loss' was not in top 1
+Epoch 13, global step 588: 'val_loss' reached 0.31128 (best 0.31128), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=13-val_loss=0.31.ckpt' as top 1
+Epoch 14, global step 630: 'val_loss' reached 0.28892 (best 0.28892), saving model to '/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/epoch=14-val_loss=0.29.ckpt' as top 1
+Epoch 15, global step 672: 'val_loss' was not in top 1
+Epoch 16, global step 714: 'val_loss' was not in top 1
+Epoch 17, global step 756: 'val_loss' was not in top 1
+Epoch 18, global step 798: 'val_loss' was not in top 1
+Epoch 19, global step 840: 'val_loss' was not in top 1
+Epoch 20, global step 882: 'val_loss' was not in top 1
+Epoch 21, global step 924: 'val_loss' was not in top 1
+Epoch 22, global step 966: 'val_loss' was not in top 1
+Epoch 23, global step 1008: 'val_loss' was not in top 1
+Epoch 24, global step 1050: 'val_loss' was not in top 1
+Epoch 25, global step 1092: 'val_loss' was not in top 1
+Epoch 26, global step 1134: 'val_loss' was not in top 1
+Epoch 27, global step 1176: 'val_loss' was not in top 1
+Epoch 28, global step 1218: 'val_loss' was not in top 1
+Epoch 29, global step 1260: 'val_loss' was not in top 1
+Epoch 30, global step 1302: 'val_loss' was not in top 1
+Epoch 31, global step 1344: 'val_loss' was not in top 1
+Epoch 32, global step 1386: 'val_loss' was not in top 1
+Epoch 33, global step 1428: 'val_loss' was not in top 1
+Epoch 34, global step 1470: 'val_loss' was not in top 1
+Epoch 35, global step 1512: 'val_loss' was not in top 1
+Epoch 36, global step 1554: 'val_loss' was not in top 1
+Epoch 37, global step 1596: 'val_loss' was not in top 1
+Epoch 38, global step 1638: 'val_loss' was not in top 1
+Epoch 39, global step 1680: 'val_loss' was not in top 1
+`Trainer.fit` stopped: `max_epochs=40` reached.
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/homes/sbghosh/.local/lib/python3.9/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=DenseNet121_Weights.IMAGENET1K_V1`. You can also use `weights=DenseNet121_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/usr/local/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version >=1.18.5 and <1.25.0 is required for this version of SciPy (detected version 1.26.4
+  warnings.warn(f"A NumPy version >={np_minversion} and <{np_maxversion}"
+/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/clf_evaluate.py:70: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+  plt.figure(figsize=(6, 4))

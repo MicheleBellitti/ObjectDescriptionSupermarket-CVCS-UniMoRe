@@ -9,8 +9,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import mahalanobis, euclidean
 from matplotlib import pyplot as plt
 from datasets import FreiburgDataset
+import random
 
-image_path = "retrival_files/images/pasta_1.jpg"  # Update this path
+NUM_TEST_IMAGES = 2939
+
+image_path = "/work/cvcs_2023_group23/SKU110K_fixed/images/test_{random.randint(NUM_TEST_IMAGES)}.jpg"  # Update this path
 
 # Configuration settings for the image retrieval system
 class Config:
@@ -53,6 +56,49 @@ class ModelHandler:
                 out = torch.nn.functional.adaptive_avg_pool2d(features, (1, 1))
                 return torch.flatten(out, 1)
         return DenseNetEmbedding().to(self.config.DEVICE)
+# Processes data, including loading, transformations, and embedding extraction
+class DataProcessor:
+    def __init__(self, config, model):
+        self.config = config
+        self.model = model
+
+    def extract_embeddings_from_bboxes(self, image_input, bboxes):
+        """
+        Extract embeddings for each bounding box in the image.
+
+        :param image_input: A PIL Image or a path to an image file.
+        :param bboxes: A list of bounding boxes, each defined by [x1, y1, x2, y2].
+        :return: A list of embeddings.
+        """
+        # Load image if a path is provided, otherwise use the PIL image directly
+        image = Image.open(image_input).convert("RGB") if isinstance(image_input, str) else image_input
+        embeddings = []
+        self.model.eval()
+        with torch.no_grad():
+            for bbox in bboxes:
+                cropped_image = self._crop_image(image, bbox)
+                cropped_tensor = t(cropped_image).unsqueeze(0).to(self.config.DEVICE)
+                embedding = self.model(cropped_tensor).reshape((1024, ))
+                embeddings.append(embedding.cpu().numpy())
+        return embeddings
+    def extract_embeddings_from_image(self, image_input):
+      """
+      Extract embeddings for each bounding box in the image.
+
+      :param image_input: A PIL Image or a path to an image file.
+      :return: A list of embeddings.
+      """
+      # Load image if a path is provided, otherwise use the PIL image directly
+      image = Image.open(image_input).convert("RGB") if isinstance(image_input, str) else image_input
+      embeddings = []
+      self.model.eval()
+      with torch.no_grad():
+
+            image_tensor = transforms.functional.to_tensor(image).unsqueeze(0).to(self.config.DEVICE)
+            embedding = self.model(image_tensor)
+            embeddings.append(embedding.cpu().numpy())
+      return embeddings
+  
 
 class Visualizer:
     @staticmethod
@@ -98,16 +144,38 @@ def compute_euclidean_distances(query_embedding, embeddings):
 
 def main(image_path):
     config = Config()
+    # Load object detector for inference
+    detector_weights = torchvision.models.detection.FasterRCNN_ResNet50_FPN_Weights.DEFAULT
+    detector = torchvision.models.detection.fasterrcnn_resnet50_fpn(
+            weights=weights)
+    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    detector.roi_heads.box_predictor = FastRCNNPredictor(
+            in_features, num_classes)
+    # Load weights
+    checkpoint = torch.load(args.resume_checkpoint)
+    detector.load_state_dict(checkpoint["model_state_dict"])
+    detector.to(config.DEVICE)
+    detector.eval() # inference mode
+    
+    # Load embdedding model
     model_handler = ModelHandler(config)
     embedding_model = model_handler.get_embedding_model()
+    dp = DataProcessor(config, embedding_model)
     dataset = FreiburgDataset(split='test', transform=transforms.Compose([
                            transforms.Resize((256, 256)),
                            transforms.ToTensor()]), data_dir=config.DATA_DIR)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=config.BATCH_SIZE, shuffle=False)
-    embeddings = extract_embeddings(dataloader, embedding_model)
+    # embeddings = extract_embeddings(dataloader, embedding_model)
+    
+    # Inference on FRCNN
+    query_image = Image.open(image_path).convert('RGB')
+    query_image = transforms.functional.to_tensor(query_image).unsqueeze(0).to(config.DEVICE)
+    bboxes = detector(query_image)
+    
+    embeddings = dp.
     #pca_embeddings, pca = apply_pca(embeddings)
     pca_embeddings = embeddings   
-    query_image = Image.open(image_path).convert('RGB')
+    
     query_transform = transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor()])
     query_vector = query_transform(query_image).unsqueeze(0).to(config.DEVICE)
     query_embedding = embedding_model(query_vector).detach().cpu().numpy()

@@ -195,7 +195,7 @@ class LitModel(pl.LightningModule):
 print("Starting clf_train.py \n")
 
 # Set constants
-EPOCHS = 20
+EPOCHS = 100
 BATCH_SIZE = 64
 NUM_CLASSES = 43  # Update this based on your dataset
 DATA_DIR = "/work/cvcs_2023_group23/GroceryStoreDataset/dataset/"  # Update this path
