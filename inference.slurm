@@ -1,13 +1,11 @@
 #!/bin/bash
 #SBATCH --partition=all_serial
-#SBATCH --time=00:01:00
+#SBATCH --time=00:05:00
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=4   # Number of tasks (GPUs) per node
 #SBATCH --nodes=1             # Number of nodes requested
 #SBATCH --output=./logs/output_%j.out
 #SBATCH --error=./logs/output_%j.err
-#SBATCH --mail-user=319399@studenti.unimore.it
-#SBATCH --mail-type=ALL
 
 python -u -m torch.distributed.run \
 --nproc_per_node=4 \
