@@ -7,7 +7,7 @@ from torchvision import models, transforms
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor, FasterRCNN_ResNet50_FPN_V2_Weights, fasterrcnn_resnet50_fpn_v2, fasterrcnn_resnet50_fpn, FasterRCNN_ResNet50_FPN_Weights
 from torchvision.models.detection import _utils as det_utils
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
-from torchvision.utils import draw_bounding_boxes
+from torchvision.utils import draw_bounding_boxes, save_image
 from PIL import Image, ImageDraw, ImageFont
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -16,11 +16,25 @@ import random
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import pandas as pd
+import torch.optim as optim
+from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
+import pytorch_lightning as pl
+from pytorch_lightning import Trainer
+from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_lightning.callbacks import ModelCheckpoint, RichProgressBar
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+
+# Visualization & Metrics
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import precision_recall_curve, f1_score, confusion_matrix
 
 NUM_TEST_IMAGES = 2939
 
 scene_image_path = f"/work/cvcs_2023_group23/SKU110K_fixed/images/test_{random.randint(0,NUM_TEST_IMAGES)}.jpg"  # Update this path
 frcnn_checkpoint_path = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/frcnn/checkpoint_230324_AdaBelief_Transforms_75epochs.pth"
+densenet_checkpoint_path = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/last.ckpt"
 
 # Configuration settings for the image retrieval system
 class Config:
@@ -88,6 +102,131 @@ def determine_shelf_numbers(bounding_boxes, img_width, img_height, y_weight=50):
     print("Shelf Number Determined")
     return shelf_labels, kmeans
 
+class GroceryStoreDataset(Dataset):
+
+    # directory structure:
+    # - root/[train/test/val]/[vegetable/fruit/packages]/[vegetables/fruit/packages]_class/[vegetables/fruit/packages]_subclass/[vegetables/fruit/packages]_image.jpg
+    # - root/classes.csv
+    # - root/train.txt
+    # - root/test.txt
+    # - root/val.txt
+    def __init__(self, split='test', transform=None):
+        super(GroceryStoreDataset, self).__init__()
+        self.root = "/work/cvcs_2023_group23/GroceryStoreDataset/dataset/"
+        self.split = split
+        self.transform = transform
+        self.class_to_idx = {}
+        self.idx_to_class = {}
+        self._descriptions = {}
+
+        classes_file = os.path.join(self.root, "classes.csv")
+
+        self.classes = {'42': 'background'}
+        with open(classes_file, "r") as f:
+
+            lines = f.readlines()
+
+            for line in lines[1:]:
+                class_name, class_id, coarse_class_name, coarse_class_id, iconic_image_path, prod_description = line.strip().split(
+                    ",")
+                self.classes[class_id] = class_name
+                self.class_to_idx[class_name] = coarse_class_id
+                self.idx_to_class[class_id] = class_name
+                self._descriptions[class_name] = prod_description
+
+        self.samples = []
+        split_file = os.path.join(self.root, self.split + ".txt")
+        # print(self.classes)
+        with open(split_file, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                line = line.strip()
+                img_path, class_id, coarse_class_id = line.split(",")
+                class_name = self.classes[class_id.strip()]
+                self.samples.append(
+                    (os.path.join(self.root, img_path), int(self.class_to_idx[class_name])))
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        img_path, label = self.samples[idx]
+        img = Image.open(img_path).convert('RGB')
+
+        if self.transform:
+            img = self.transform(img)
+        # print(img.shape, label)
+        return img, label
+
+    def description(self, class_name):
+        return self._descriptions[class_name]
+
+class LitModel(pl.LightningModule):
+    def __init__(self, num_classes=43, learning_rate=1e-3):
+        super().__init__()
+        # for param in self.model.parameters():
+        #     param.requires_grad = False
+        
+        self.model = models.densenet121(pretrained=True)
+        num_ftrs = self.model.classifier.in_features  # Get the number of features of the last layer
+        self.model.classifier = nn.Linear(num_ftrs, num_classes)  # Update classifier
+                
+        # Make sure the classifier parameters are set to require gradients
+        # for param in self.model.classifier.parameters():
+        #     param.requires_grad = True
+        
+        self.criterion = nn.CrossEntropyLoss()
+        self.learning_rate = learning_rate
+
+    def forward(self, x):
+        return self.model(x)
+
+    def configure_optimizers(self):
+        optimizer = optim.Adamax(self.parameters(), lr=self.learning_rate)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=3)
+        return {"optimizer": optimizer, "lr_scheduler": scheduler, "monitor": "val_loss"}
+
+    def training_step(self, batch, batch_idx):
+        inputs, labels = batch
+        outputs = self(inputs)
+        loss = self.criterion(outputs, labels)
+        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        inputs, labels = batch
+        outputs = self(inputs)
+        loss = self.criterion(outputs, labels)
+        # Calculate accuracy
+        _, predicted = torch.max(outputs, 1)
+        correct = (predicted == labels).sum().item()
+        accuracy = correct / labels.size(0)
+        self.log('val_loss', loss, on_epoch=True, prog_bar=True)
+        self.log('val_accuracy', accuracy, on_epoch=True, prog_bar=True)
+        return loss
+
+    def test_step(self, batch, batch_idx):
+        inputs, labels = batch
+        outputs = self(inputs)
+        loss = self.criterion(outputs, labels)
+        self.log('test_loss', loss)
+
+        # Compute top-k accuracies
+        top1_acc = self.compute_topk_accuracy(outputs, labels, k=1)
+        top3_acc = self.compute_topk_accuracy(outputs, labels, k=3)
+        top5_acc = self.compute_topk_accuracy(outputs, labels, k=5)
+        self.log_dict({'test_top1_acc': top1_acc, 'test_top3_acc': top3_acc, 'test_top5_acc': top5_acc})
+
+        # Add preds and labels to output
+        _, preds = torch.max(outputs, dim=1)
+        return {'test_loss': loss, 'preds': preds, 'labels': labels, 'test_top1_acc': top1_acc, 'test_top3_acc': top3_acc, 'test_top5_acc': top5_acc}
+
+    def compute_topk_accuracy(self, outputs, labels, k=1):
+        _, top_k_predictions = outputs.topk(k, 1, True, True)
+        top_k_correct = top_k_predictions.eq(labels.view(-1, 1).expand_as(top_k_predictions))
+        top_k_correct_sum = top_k_correct.view(-1).float().sum(0)
+        return top_k_correct_sum.mul_(100.0 / labels.size(0))
+
 def overlay(image_path, final_array, output_dir, font_size=15):
     """
     Overlays bounding boxes, scores, shelf numbers, and product IDs on the image and saves it,
@@ -113,7 +252,7 @@ def overlay(image_path, final_array, output_dir, font_size=15):
         
         # Prepare the text to overlay
         score_text = f"Score: {entry['score']:.2f}" if 'score' in entry else ''
-        overlay_text = f"ID: {entry['product_id']} \n{score_text} \nShelf: {entry['shelf_number']}"
+        overlay_text = f"ID: {entry['product_id']} \nName: {entry['product_name']} \nScore: {entry['score']:.2f} \nShelf: {entry['shelf_number']}"
 
         # Measure text size to center it
         text_width, text_height = draw.textsize(overlay_text, font=font)
@@ -136,7 +275,7 @@ def overlay(image_path, final_array, output_dir, font_size=15):
     scene_image.save(output_path)
     print(f"Image with boxes, scores, shelf numbers, and product IDs saved to {output_path}")
 
-def main(scene_image_path, frcnn_checkpoint_path):
+def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
     
     print("Starting FRCNN module")
     config = Config()
@@ -208,17 +347,51 @@ def main(scene_image_path, frcnn_checkpoint_path):
         final_array.append(detection_entry)
     # Sort final_array by y_center, then by x_center
     final_array.sort(key=lambda x: (x['shelf_number'], x['x_center']))
-    print("Final detections sorted from top-left to bottom-right")
     product_id_counter = 0
     for entry in final_array:
         # Assign unique product IDs based on the counter
         entry['product_id'] = product_id_counter
         product_id_counter += 1
-    print(final_array)
+    
+    print("Starting DenseNet121 Classifier")
+    # Load the trained model
+    densenet_model = LitModel.load_from_checkpoint(densenet_checkpoint_path)
+    densenet_model.eval()
+    densenet_model.to(Config.DEVICE)  # Assuming you're using the Config class from your object detection code
+    # Define test dataset and loader
+    test_transform = transforms.Compose([
+        transforms.Resize((256, 256)),
+        transforms.CenterCrop((224, 224)),
+        transforms.ToTensor(),
+    ])
+    grocery_test_dataset = GroceryStoreDataset(split='test', transform=test_transform)
 
+    # Assume `scene_image` is your input image loaded as a PIL.Image
+    for i, bbox in enumerate(bboxes):
+        x1, y1, x2, y2 = map(int, bbox)  # Convert bbox coordinates to integers
+        crop = scene_image.crop((x1, y1, x2, y2))  # Crop using PIL
+        
+        # Prepare crop for DenseNet121 inference
+        transform = transforms.Compose([
+            transforms.Resize((224, 224)),  # Resize to match DenseNet121 input
+            transforms.ToTensor(),
+        ])
+        crop_tensor = transform(crop).unsqueeze(0).to(Config.DEVICE)  # Add batch dimension and move to device
+        
+        # DenseNet121 inference
+        with torch.no_grad():
+            output = densenet_model(crop_tensor)
+            _, predicted = torch.max(output, 1)
+            predicted_class_name = grocery_test_dataset.idx_to_class[str(predicted.item())]
+
+        # Update your final_array or detection data structure here to include the predicted_class_name
+        final_array[i]['product_name'] = predicted_class_name
+    print("Products Identified using DenseNet121 Classifier")
+    print(final_array)
+    
     # Overlay boxes, scores, and shelf numbers
     output_dir = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/"
     overlay(scene_image_path, final_array, output_dir)
 
 if __name__ == "__main__":
-    main(scene_image_path, frcnn_checkpoint_path)
+    main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path)
