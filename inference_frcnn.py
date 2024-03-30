@@ -34,6 +34,7 @@ from scipy import stats
 from collections import Counter
 from sklearn.cluster import MiniBatchKMeans
 from skimage.color import rgb2hsv, rgb2lab, rgb2ycbcr, lab2rgb
+from skimage import color
 
 NUM_TEST_IMAGES = 2939
 
@@ -232,20 +233,40 @@ class LitModel(pl.LightningModule):
         top_k_correct_sum = top_k_correct.view(-1).float().sum(0)
         return top_k_correct_sum.mul_(100.0 / labels.size(0))
 
-def is_not_gray(color, threshold):
-    return max(color) - min(color) > threshold
+def get_mode_color(image, sat_threshold=100, val_threshold=60):
+    """
+    Get the most frequent color in the image in HSV space, excluding colors with low saturation or value.
 
-def get_mode_color(image, threshold=25):
-    #Get the mode color in the image, excluding black, white, and gray colors.
-    pixels = np.array(image).reshape((-1, 3))
-    # Filter out black, white, and gray pixels
-    filtered_pixels = [pixel for pixel in pixels if is_not_gray(pixel, threshold)]
-    if not filtered_pixels:
-        #print("get_mode_color Exception: Defaulting")
+    Args:
+        image (PIL.Image): The image to process.
+        sat_threshold (int): The minimum saturation value to consider a color as 'colorful'.
+        val_threshold (int): The minimum value (brightness) to consider a color not too dark.
+
+    Returns:
+        tuple: The most frequent color in RGB format.
+    """
+    # Convert image to HSV color space
+    image_hsv = image.convert('HSV')
+    pixels_hsv = np.array(image_hsv).reshape((-1, 3))
+
+    # Filter out low saturation and value pixels
+    filtered_pixels_hsv = [
+        pixel for pixel in pixels_hsv
+        if pixel[1] > sat_threshold and pixel[2] > val_threshold
+    ]
+
+    # Calculate the mode color in HSV
+    if filtered_pixels_hsv:
+        mode_color_hsv = stats.mode(filtered_pixels_hsv, axis=0).mode[0]
+        
+        # Convert the mode color back to RGB to get the color name
+        mode_color_rgb = Image.new("HSV", (1, 1), tuple(mode_color_hsv.astype(int)))
+        mode_color_rgb = mode_color_rgb.convert('RGB').getpixel((0, 0))
+        
+        return mode_color_rgb
+    else:
+        print("HSV Exception")
         return (0,0,0)
-    # Compute the mode color
-    mode_color = stats.mode(filtered_pixels, axis=0).mode[0]
-    return tuple(mode_color)
 
 def create_color_tree():
     # Define CSS3 named colors directly
@@ -454,11 +475,12 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
         final_array[i]['median_color'] = closest_color_name
 
     print("Colors and Products Identified")
-    print(final_array)
+    #print(final_array)
     
     # Overlay boxes, scores, and shelf numbers
     output_dir = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/"
     overlay(scene_image_path, final_array, output_dir)
+    print("Scene Image Overlayed")
 
 if __name__ == "__main__":
     main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path)

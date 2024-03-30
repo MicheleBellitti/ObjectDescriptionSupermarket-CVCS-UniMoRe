@@ -1,0 +1,96 @@
+True
+cuda
+/work/cvcs_2023_group23/SKU110K_fixed/images/test_2794.jpg
+Starting FRCNN module
+True
+cuda
+cuda/work/cvcs_2023_group23/SKU110K_fixed/images/test_392
+Starting FRCNN module
+True
+cuda
+/work/cvcs_2023_group23/SKU110K_fixed/images/test_687.jpg
+Starting FRCNN module
+True
+cuda
+/work/cvcs_2023_group23/SKU110K_fixed/images/test_1840.jpg
+Starting FRCNN module
+FRCNN loaded correctly
+FRCNN loaded correctly
+FRCNN loaded correctly
+FRCNN loaded correctly
+Image Preprocessed with Histogram Equalization
+Image Preprocessed with Histogram Equalization
+Image Preprocessed with Histogram Equalization
+Image Preprocessed with Histogram Equalization
+FRCNN inferred
+Shelf Number Determined
+FRCNN inferred
+FRCNN inferred
+FRCNN inferred
+Shelf Number Determined
+Shelf Number Determined
+Shelf Number Determined
+DenseNet loaded correctly
+Looping through BBox: Color Detection & DenseNet121 Classifier
+HSV Exception
+DenseNet loaded correctly
+Looping through BBox: Color Detection & DenseNet121 Classifier
+DenseNet loaded correctly
+Looping through BBox: Color Detection & DenseNet121 Classifier
+DenseNet loaded correctly
+Looping through BBox: Color Detection & DenseNet121 Classifier
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+HSV Exception
+Colors and Products Identified
+HSV Exception
+HSV Exception
+Image with boxes, scores, shelf numbers, and product IDs saved to /work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/test_392_frcnn_output.jpg
+Scene Image Overlayed
+HSV Exception
+HSV Exception
+Colors and Products Identified
+Colors and Products Identified
+Image with boxes, scores, shelf numbers, and product IDs saved to /work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/test_2794_frcnn_output.jpg
+Scene Image Overlayed
+Image with boxes, scores, shelf numbers, and product IDs saved to /work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/test_687_frcnn_output.jpg
+Scene Image Overlayed
+Colors and Products Identified
+Image with boxes, scores, shelf numbers, and product IDs saved to /work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/test_1840_frcnn_output.jpg
+Scene Image Overlayed
