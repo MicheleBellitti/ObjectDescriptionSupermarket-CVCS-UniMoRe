@@ -8,7 +8,7 @@ from torchvision.models.detection.faster_rcnn import FastRCNNPredictor, FasterRC
 from torchvision.models.detection import _utils as det_utils
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from torchvision.utils import draw_bounding_boxes, save_image
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 import cv2
@@ -23,12 +23,17 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, RichProgressBar
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-
-# Visualization & Metrics
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import precision_recall_curve, f1_score, confusion_matrix
+import webcolors
+from scipy.spatial.distance import euclidean
+from scipy.spatial import KDTree
+from scipy import stats
+from collections import Counter
+from sklearn.cluster import MiniBatchKMeans
+from skimage.color import rgb2hsv, rgb2lab, rgb2ycbcr, lab2rgb
 
 NUM_TEST_IMAGES = 2939
 
@@ -227,7 +232,43 @@ class LitModel(pl.LightningModule):
         top_k_correct_sum = top_k_correct.view(-1).float().sum(0)
         return top_k_correct_sum.mul_(100.0 / labels.size(0))
 
-def overlay(image_path, final_array, output_dir, font_size=15):
+def is_not_gray(color, threshold):
+    return max(color) - min(color) > threshold
+
+def get_mode_color(image, threshold=25):
+    #Get the mode color in the image, excluding black, white, and gray colors.
+    pixels = np.array(image).reshape((-1, 3))
+    # Filter out black, white, and gray pixels
+    filtered_pixels = [pixel for pixel in pixels if is_not_gray(pixel, threshold)]
+    if not filtered_pixels:
+        #print("get_mode_color Exception: Defaulting")
+        return (0,0,0)
+    # Compute the mode color
+    mode_color = stats.mode(filtered_pixels, axis=0).mode[0]
+    return tuple(mode_color)
+
+def create_color_tree():
+    # Define CSS3 named colors directly
+    css3_db = webcolors.CSS3_NAMES_TO_HEX
+    names = []
+    rgb_values = []
+    for name, hex_value in css3_db.items():
+        names.append(name)
+        rgb_values.append(webcolors.hex_to_rgb(hex_value))
+    # Create a KDTree for fast lookup of nearest RGB values
+    tree = KDTree(rgb_values)
+    return tree, names
+color_tree, color_names = create_color_tree()
+
+def closest_color(requested_color):
+    # Convert requested_color to a NumPy array if it's not already
+    requested_color_np = np.array(requested_color)
+    # Query the KDTree to find the closest color name
+    _, index = color_tree.query(requested_color_np)
+    return color_names[index]
+
+
+def overlay(image_path, final_array, output_dir, font_size=10):
     """
     Overlays bounding boxes, scores, shelf numbers, and product IDs on the image and saves it,
     placing the text in the center of the bounding box.
@@ -246,20 +287,15 @@ def overlay(image_path, final_array, output_dir, font_size=15):
     for entry in final_array:
         # Extracting coordinates for drawing
         x1, y1, x2, y2 = entry['x1'], entry['y1'], entry['x2'], entry['y2']
-        
         # Draw the bounding box in red
         draw.rectangle([x1, y1, x2, y2], outline="red", width=10)
-        
         # Prepare the text to overlay
-        score_text = f"Score: {entry['score']:.2f}" if 'score' in entry else ''
-        overlay_text = f"ID: {entry['product_id']} \nName: {entry['product_name']} \nScore: {entry['score']:.2f} \nShelf: {entry['shelf_number']}"
-
+        overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name')} \nDenseNet: {entry.get('densenet_confidence', 0):.2f} \nColor: {entry.get('median_color')}"
         # Measure text size to center it
         text_width, text_height = draw.textsize(overlay_text, font=font)
         # Calculate the center position
         text_x = x1 + (x2 - x1 - text_width) / 2
         text_y = y1 + (y2 - y1 - text_height) / 2
-
         # Draw the text
         draw.text((text_x, text_y), overlay_text, fill="yellow", font=font)
 
@@ -276,7 +312,7 @@ def overlay(image_path, final_array, output_dir, font_size=15):
     print(f"Image with boxes, scores, shelf numbers, and product IDs saved to {output_path}")
 
 def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
-    
+    print(scene_image_path)
     print("Starting FRCNN module")
     config = Config()
     # Load object detector for inference
@@ -309,8 +345,7 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
         output = detector(scene_image_tensor_unsqueezed)[0]
     bboxes = output["boxes"].cpu().numpy()  # Convert to NumPy array and move to CPU
     scores = output['scores'].cpu().numpy()
-    print(scores)
-    print("FRCNN inferred correctly")
+    print("FRCNN inferred")
 
     # Convert detections to a DataFrame for processing
     img_width, img_height = scene_image_tensor.shape[-1], scene_image_tensor.shape[-2]
@@ -340,7 +375,7 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
             'y2': y2,
             'x_center': x_center,
             'y_center': y_center,
-            'score': score,  # Now including the detection score
+            'frcnn_confidence': score,  # Now including the detection score
             'shelf_number': shelf_number  # Shelf number determined earlier
         }
         # Append this entry to the final array
@@ -353,11 +388,13 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
         entry['product_id'] = product_id_counter
         product_id_counter += 1
     
-    print("Starting DenseNet121 Classifier")
+    
     # Load the trained model
     densenet_model = LitModel.load_from_checkpoint(densenet_checkpoint_path)
     densenet_model.eval()
     densenet_model.to(Config.DEVICE)  # Assuming you're using the Config class from your object detection code
+    print("DenseNet loaded correctly")
+
     # Define test dataset and loader
     test_transform = transforms.Compose([
         transforms.Resize((256, 256)),
@@ -366,27 +403,57 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
     ])
     grocery_test_dataset = GroceryStoreDataset(split='test', transform=test_transform)
 
-    # Assume `scene_image` is your input image loaded as a PIL.Image
+    print("Looping through BBox: Color Detection & DenseNet121 Classifier")
     for i, bbox in enumerate(bboxes):
         x1, y1, x2, y2 = map(int, bbox)  # Convert bbox coordinates to integers
-        crop = scene_image.crop((x1, y1, x2, y2))  # Crop using PIL
+        crop = scene_image_eq.crop((x1, y1, x2, y2))  # Crop using PIL
         
+        # Convert bbox coordinates to integers
+        x1, y1, x2, y2 = map(int, bbox)
+        # Calculate the midpoints of the bounding box
+        mid_x = (x1 + x2) // 2
+        mid_y = (y1 + y2) // 2
+        # Determine the size of the middle box you want to crop
+        # This will crop a box of size (box_width x box_height) centered at the midpoint
+        box_width = (x2 - x1) * 0.85
+        box_height = (y2 - y1) * 0.85
+        # Calculate the coordinates of the middle box
+        middle_box_x1 = max(x1, mid_x - box_width // 2)
+        middle_box_y1 = max(y1, mid_y - box_height // 2)
+        middle_box_x2 = min(x2, mid_x + box_width // 2)
+        middle_box_y2 = min(y2, mid_y + box_height // 2)
+        # Crop the middle box using PIL
+        middle_crop = scene_image_eq.crop((middle_box_x1, middle_box_y1, middle_box_x2, middle_box_y2)) 
+        # Get the most frequent color from the cropped image
+        dominant_color = get_mode_color(middle_crop) 
+        # Ensure dominant_color is formatted correctly (should already be, based on Step 1)
+        if not isinstance(dominant_color, tuple) or len(dominant_color) != 3:
+            raise ValueError("Dominant color must be a tuple of 3 elements.")
+        # Now call closest_color with the correctly formatted dominant_color
+        closest_color_name = closest_color(dominant_color)
+
         # Prepare crop for DenseNet121 inference
         transform = transforms.Compose([
             transforms.Resize((224, 224)),  # Resize to match DenseNet121 input
             transforms.ToTensor(),
         ])
         crop_tensor = transform(crop).unsqueeze(0).to(Config.DEVICE)  # Add batch dimension and move to device
-        
-        # DenseNet121 inference
+        # DenseNet121 inference for class name with confidence
         with torch.no_grad():
             output = densenet_model(crop_tensor)
-            _, predicted = torch.max(output, 1)
+            probabilities = torch.nn.functional.softmax(output, dim=1)
+            _, predicted = torch.max(output, 1)  # Using raw output for prediction as before
             predicted_class_name = grocery_test_dataset.idx_to_class[str(predicted.item())]
 
-        # Update your final_array or detection data structure here to include the predicted_class_name
+            # Now, extracting confidence from probabilities using the predicted class index
+            confidence = probabilities[0, predicted.item()].item()
+
+        # Update the final_array entry for this detection with classifier information
         final_array[i]['product_name'] = predicted_class_name
-    print("Products Identified using DenseNet121 Classifier")
+        final_array[i]['densenet_confidence'] = confidence
+        final_array[i]['median_color'] = closest_color_name
+
+    print("Colors and Products Identified")
     print(final_array)
     
     # Overlay boxes, scores, and shelf numbers
