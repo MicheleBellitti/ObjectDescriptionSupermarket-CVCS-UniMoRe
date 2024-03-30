@@ -35,12 +35,14 @@ from collections import Counter
 from sklearn.cluster import MiniBatchKMeans
 from skimage.color import rgb2hsv, rgb2lab, rgb2ycbcr, lab2rgb
 from skimage import color
+import easyocr
 
 NUM_TEST_IMAGES = 2939
 
 scene_image_path = f"/work/cvcs_2023_group23/SKU110K_fixed/images/test_{random.randint(0,NUM_TEST_IMAGES)}.jpg"  # Update this path
 frcnn_checkpoint_path = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/frcnn/checkpoint_230324_AdaBelief_Transforms_75epochs.pth"
 densenet_checkpoint_path = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/clf_densetnet121/240325/40Epochs/last.ckpt"
+reader = easyocr.Reader(['en'], model_storage_directory='/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints')
 
 # Configuration settings for the image retrieval system
 class Config:
@@ -288,7 +290,6 @@ def closest_color(requested_color):
     _, index = color_tree.query(requested_color_np)
     return color_names[index]
 
-
 def overlay(image_path, final_array, output_dir, font_size=10):
     """
     Overlays bounding boxes, scores, shelf numbers, and product IDs on the image and saves it,
@@ -311,7 +312,7 @@ def overlay(image_path, final_array, output_dir, font_size=10):
         # Draw the bounding box in red
         draw.rectangle([x1, y1, x2, y2], outline="red", width=10)
         # Prepare the text to overlay
-        overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name')} \nDenseNet: {entry.get('densenet_confidence', 0):.2f} \nColor: {entry.get('median_color')}"
+        overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name')} \nDenseNet: {entry.get('densenet_confidence', 0):.2f} \n{entry.get('color')} \n{entry.get('ocr')}"
         # Measure text size to center it
         text_width, text_height = draw.textsize(overlay_text, font=font)
         # Calculate the center position
@@ -468,14 +469,20 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
 
             # Now, extracting confidence from probabilities using the predicted class index
             confidence = probabilities[0, predicted.item()].item()
-
+        
+        crop_np = np.array(crop)
+        ocr_result = reader.readtext(crop_np)
+        detected_texts = [result[1] for result in ocr_result]
+        detected_text_str = " ".join(detected_texts)
+        print(detected_text_str)
         # Update the final_array entry for this detection with classifier information
         final_array[i]['product_name'] = predicted_class_name
         final_array[i]['densenet_confidence'] = confidence
-        final_array[i]['median_color'] = closest_color_name
+        final_array[i]['color'] = closest_color_name
+        final_array[i]['ocr'] = detected_text_str
 
     print("Colors and Products Identified")
-    #print(final_array)
+    print(final_array)
     
     # Overlay boxes, scores, and shelf numbers
     output_dir = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/"
