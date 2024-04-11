@@ -13,7 +13,7 @@ import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 import cv2
 import random
-from sklearn.cluster import KMeans
+
 from sklearn.metrics import silhouette_score
 import pandas as pd
 import torch.optim as optim
@@ -32,9 +32,12 @@ from scipy.spatial.distance import euclidean
 from scipy.spatial import KDTree
 from scipy import stats
 from collections import Counter
-from sklearn.cluster import MiniBatchKMeans
+from sklearn.cluster import KMeans, MiniBatchKMeans
 from skimage.color import rgb2hsv, rgb2lab, rgb2ycbcr, lab2rgb
 from skimage import color
+from openai import OpenAI
+from text_transformer import SceneDescriptionGenerator
+import clip
 
 NUM_TEST_IMAGES = 2939
 
@@ -233,40 +236,34 @@ class LitModel(pl.LightningModule):
         top_k_correct_sum = top_k_correct.view(-1).float().sum(0)
         return top_k_correct_sum.mul_(100.0 / labels.size(0))
 
-def get_mode_color(image, sat_threshold=100, val_threshold=60):
+def spatial_rgb_color_clustering(image, n_clusters=3):
     """
-    Get the most frequent color in the image in HSV space, excluding colors with low saturation or value.
-
+    Perform color clustering on an image using RGB color space and spatial features (x, y coordinates).
+    
     Args:
-        image (PIL.Image): The image to process.
-        sat_threshold (int): The minimum saturation value to consider a color as 'colorful'.
-        val_threshold (int): The minimum value (brightness) to consider a color not too dark.
-
+        image (PIL.Image): The cropped image of the object.
+        n_clusters (int): Number of clusters to use in KMeans.
+        
     Returns:
-        tuple: The most frequent color in RGB format.
+        tuple: The dominant color in RGB format.
     """
-    # Convert image to HSV color space
-    image_hsv = image.convert('HSV')
-    pixels_hsv = np.array(image_hsv).reshape((-1, 3))
+    # Convert image to NumPy array
+    image_np = np.array(image)
+    height, width, _ = image_np.shape
+    
+    # Create features using both RGB color values and position (x, y)
+    X = np.zeros((width * height, 5))
+    X[:, :3] = image_np.reshape((-1, 3))  # RGB color features
+    X[:, 3] = np.tile(np.arange(width), height)  # x coordinate
+    X[:, 4] = np.repeat(np.arange(height), width)  # y coordinate
+    
+    # Perform KMeans clustering
+    kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(X)
+    dominant_cluster_index = np.argmax(np.bincount(kmeans.labels_))
+    dominant_color_rgb = kmeans.cluster_centers_[dominant_cluster_index][:3]
 
-    # Filter out low saturation and value pixels
-    filtered_pixels_hsv = [
-        pixel for pixel in pixels_hsv
-        if pixel[1] > sat_threshold and pixel[2] > val_threshold
-    ]
-
-    # Calculate the mode color in HSV
-    if filtered_pixels_hsv:
-        mode_color_hsv = stats.mode(filtered_pixels_hsv, axis=0).mode[0]
-        
-        # Convert the mode color back to RGB to get the color name
-        mode_color_rgb = Image.new("HSV", (1, 1), tuple(mode_color_hsv.astype(int)))
-        mode_color_rgb = mode_color_rgb.convert('RGB').getpixel((0, 0))
-        
-        return mode_color_rgb
-    else:
-        print("HSV Exception")
-        return (0,0,0)
+    # The color values are already in RGB, so we can return them directly
+    return tuple(int(c) for c in dominant_color_rgb)
 
 def create_color_tree():
     # Define CSS3 named colors directly
@@ -287,6 +284,83 @@ def closest_color(requested_color):
     # Query the KDTree to find the closest color name
     _, index = color_tree.query(requested_color_np)
     return color_names[index]
+
+def extract_clip_keywords(image, model, preprocess, top_k=1):
+    """
+    Extract descriptive keywords from an image using the CLIP model,
+    specifically targeting common supermarket products.
+    
+    Args:
+        image (PIL.Image): The image to process.
+        model: The pre-trained CLIP model.
+        preprocess: The pre-processing function for CLIP.
+        top_k (int): The number of top keywords to return.
+        
+    Returns:
+        List[str]: A list of descriptive keywords.
+    """
+    image = preprocess(image).unsqueeze(0).to(Config.DEVICE)
+    with torch.no_grad():
+        image_features = model.encode_image(image)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+
+        potential_keywords = [
+            "apple", "banana", "orange", "lemon", "grapefruit", "lime", "cherries", "nectarine", "papaya", "pineapple",
+            "avocado", "grapes", "kiwi", "mango", "melon", "peach", "pear", "plum", "pomegranate", "watermelon",
+            "asparagus", "aubergine", "beetroot", "bell pepper", "broccoli", "brussels sprouts", "cabbage", "carrot", "cauliflower", "celery",
+            "cucumber", "garlic", "green beans", "kale", "leeks", "lettuce", "mushrooms", "onion", "peas", "potato",
+            "pumpkin", "radish", "spinach", "sweet corn", "sweet potato", "tomato", "zucchini", "squash", "turnip", "yam",
+            "milk", "yogurt", "butter",
+            "cheese", "ice cream", "sorbet", "cream",
+            "cola", "diet soda", "root beer", "ginger ale", "tonic water", "energy drink", "sports drink", "lemonade", "iced tea", "fruit punch",
+            "water", "coffee", "tea", "wine", "champagne", "beer", "vodka", "whiskey",
+            "rum", "gin", "tequila", "brandy", "liqueur", "cordial", "sake", "cider", "mead", "mocktails",
+            "chocolate bar", "candy", "gum", "mints", "jelly beans", "marshmallows", "lollipops", "toffee", "fudge", "hard candy",
+            "bread", "bagel", "croissant", "muffins", "pancakes", "waffles", "scones", "french toast", "baguette", "sourdough bread",
+            "rye bread", "cornbread", "biscuits", "rolls", "flatbread", "pita bread", "naan", "focaccia", "pizza dough", "tortillas",
+            "chicken breast", "chicken thighs", "ground beef", "steak", "pork chops", "bacon", "ham", "sausage", "turkey", "duck",
+            "salmon", "tuna", "trout", "cod", "shrimp", "lobster", "crab", "mussels", "oysters", "sardines",
+            "tofu", "tempeh", "seitan", "lentils", "chickpeas", "black beans", "kidney beans", "edamame", "peanuts", "almonds",
+            "cashews", "walnuts", "pistachios", "hazelnuts", "pecans", "sunflower seeds", "pumpkin seeds", "chia seeds", "flax seeds", "hemp seeds",
+            "rice", "quinoa", "barley", "bulgur", "farro", "couscous",
+            "pasta",
+            "tomato sauce", "pesto", "vinegar",
+            "olive oil", "oil",
+            "flour",
+            "sugar", "stevia", "xylitol",
+            "salt", "pepper", "chili powder", "paprika", "turmeric", "cumin",
+            "cinnamon", "nutmeg", "cloves", "allspice", "ginger", "vanilla extract", "almond extract", "lemon zest", "orange zest", "curry powder",
+            "chips", "pretzels", "popcorn", "nuts", "trail mix", "granola bars", "protein bars", "fruit snacks", "rice cakes", "crackers",
+            "cookies", "brownies", "cakes",
+            "frozen food",
+            "shampoo", "conditioner", "body wash", "bar soap", "hand soap", "toothpaste", "mouthwash", "deodorant", "shaving cream", "lotion",
+            "laundry detergent", "fabric softener", "bleach", "dish soap", "disinfectant", "glass cleaner", "floor cleaner", "furniture polish", "air freshener", "candles",
+            "paper towels", "toilet paper", "facial tissue", "napkins", "trash bags", "sandwich bags", "aluminum foil", "plastic wrap", "wax paper", "parchment paper",
+            "dog food", "cat food", "bird seed", "fish flakes", "pet treats", "pet toys", "leashes", "collars", "pet beds", "aquarium supplies",
+            "diapers", "baby wipes", "baby formula", "baby food", "pacifiers", "bottles", "teething rings", "baby lotion", "baby shampoo", "strollers",
+            "pain reliever", "cold medicine", "allergy medication", "antibiotic ointment", "band-aids", "first aid kit", "prescription pickup", "vitamins", "supplements", "sunscreen",
+            "condiments", "spices", "herbs", "canned goods", "pickles", "jams", "jellies", "nut butters", "olives", "sauerkraut",
+            "dried fruits", "beef jerky", "vegan snacks", "gluten-free products", "lactose-free products", "organic products", "non-GMO products", "energy bars", "dietary supplements", "protein powders",
+            "baking supplies", "cake decorating supplies", "seasonal goods", "holiday decorations", "party supplies", "greeting cards", "stationery", "craft supplies", "school supplies", "office supplies",
+            "magazines", "newspapers", "books", "DVDs", "gift cards", "lottery tickets", "prepaid phone cards", "electronic accessories", "batteries", "light bulbs"
+        ]
+        
+        text_tokens = clip.tokenize(potential_keywords).to(Config.DEVICE)
+        text_features = model.encode_text(text_tokens)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        
+        # Cosine similarity as logits
+        similarity = (image_features @ text_features.T).softmax(dim=-1)
+        
+        # Convert tensor to full precision (float32) before calling topk
+        similarity = similarity.float()
+        
+        # Get the top k highest values' indices
+        top_probs, top_labels = similarity.cpu().topk(top_k, dim=-1)
+
+        keywords = [potential_keywords[i] for i in top_labels[0]]
+        
+        return keywords
 
 def describe_spatial_relationships(final_array):
     # Initialize a dictionary to hold descriptions for each product ID
@@ -309,6 +383,26 @@ def describe_spatial_relationships(final_array):
         spatial_descriptions[item['product_id']] = '; '.join(descriptions)
     return spatial_descriptions
 
+def generate_gpt_summary(descriptions, final_array):
+    client = OpenAI()
+    # Create a prompt with the descriptions to instruct GPT-4
+    prompt = "Summarize the following spatial relationships into a concise scene description:\n\n" + str(''.join(final_array))
+
+    # Make an API call to OpenAI
+    response = client.completions.create(
+            model="gpt-3.5-turbo-instruct",
+            prompt=prompt,
+            temperature=0.7,
+            max_tokens=6000,  # you can adjust this to be longer or shorter as needed
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+
+    # Extract and return the summary from the response
+    summary = response.choices[0].text.strip()
+    return summary
+
 def overlay(image_path, final_array, output_dir, font_size=10):
     """
     Overlays bounding boxes, scores, shelf numbers, and product IDs on the image and saves it,
@@ -328,10 +422,12 @@ def overlay(image_path, final_array, output_dir, font_size=10):
     for entry in final_array:
         # Extracting coordinates for drawing
         x1, y1, x2, y2 = entry['x1'], entry['y1'], entry['x2'], entry['y2']
+        clip_keywords_str = ', '.join(entry.get('clip_keywords', []))
         # Draw the bounding box in red
         draw.rectangle([x1, y1, x2, y2], outline="red", width=10)
         # Prepare the text to overlay
-        overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name')} \nDenseNet: {entry.get('densenet_confidence', 0):.2f} \n{entry.get('color')}"
+        # overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name')} \nDenseNet: {entry.get('densenet_confidence', 0):.2f} \n{entry.get('color')} \n{clip_keywords_str}"
+        overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name') }\n{entry.get('color')} \n{clip_keywords_str}"
         # Measure text size to center it
         text_width, text_height = draw.textsize(overlay_text, font=font)
         # Calculate the center position
@@ -350,7 +446,7 @@ def overlay(image_path, final_array, output_dir, font_size=10):
     
     # Save the image
     scene_image.save(output_path)
-    print(f"Image with boxes, scores, shelf numbers, and product IDs saved to {output_path}")
+    print(f"Overlayed Scene Image saved to {output_path}")
 
 def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
     print(scene_image_path)
@@ -444,7 +540,11 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
     ])
     grocery_test_dataset = GroceryStoreDataset(split='test', transform=test_transform)
 
-    print("Looping through BBox: Color Detection & DenseNet121 Classifier")
+    # Load the CLIP model
+    clip_model, clip_preprocess = clip.load('ViT-B/32', device=Config.DEVICE)
+    print("CLIP loaded correctly")
+
+    print("Looping through BBox: Color Detection, DenseNet121 Classifier & CLIP Zero Shot")
     for i, bbox in enumerate(bboxes):
         x1, y1, x2, y2 = map(int, bbox)  # Convert bbox coordinates to integers
         crop = scene_image_eq.crop((x1, y1, x2, y2))  # Crop using PIL
@@ -466,7 +566,7 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
         # Crop the middle box using PIL
         middle_crop = scene_image_eq.crop((middle_box_x1, middle_box_y1, middle_box_x2, middle_box_y2)) 
         # Get the most frequent color from the cropped image
-        dominant_color = get_mode_color(middle_crop) 
+        dominant_color = spatial_rgb_color_clustering(middle_crop, n_clusters=3)
         # Ensure dominant_color is formatted correctly (should already be, based on Step 1)
         if not isinstance(dominant_color, tuple) or len(dominant_color) != 3:
             raise ValueError("Dominant color must be a tuple of 3 elements.")
@@ -489,21 +589,41 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
             # Now, extracting confidence from probabilities using the predicted class index
             confidence = probabilities[0, predicted.item()].item()
         
+        # Crop the image for CLIP keyword extraction
+        crop_for_clip = scene_image_eq.crop((x1, y1, x2, y2))
+
+        # Extract keywords with CLIP
+        clip_keywords = extract_clip_keywords(crop_for_clip, clip_model, clip_preprocess, top_k=1)
+
         # Update the final_array entry for this detection with classifier information
         final_array[i]['product_name'] = predicted_class_name
-        final_array[i]['densenet_confidence'] = confidence
+        # final_array[i]['densenet_confidence'] = confidence
         final_array[i]['color'] = closest_color_name
+        final_array[i]['clip_keywords'] = clip_keywords
 
-    print("Colors and Products Identified")
-    #print(final_array)
+    print("Colors and Products Identified\n")
+    print(final_array)
 
+    # Generate spatial descriptions
     print("Generating Templated Spatial Descriptions")
     spatial_descriptions = describe_spatial_relationships(final_array)
-    # for product in final_array:
-    #     product['spatial_description'] = spatial_descriptions.get(product['product_id'], '')
-    print("\nTemplated Spatial Description:\n")
-    for product_id, description in spatial_descriptions.items():
-        print(f"Product ID {product_id}: {description}")
+    combined_descriptions = "\n".join(f"Product ID {pid}: {desc}" for pid, desc in spatial_descriptions.items())
+    
+    # Print templated spatial descriptions
+    print("\nTemplated Spatial Descriptions:\n", combined_descriptions)
+    
+    # Generate a summary of the spatial descriptions
+    print("\nGenerating Concise Scene Description with GPT")
+    generator = SceneDescriptionGenerator(model_name="gpt-3.5-turbo")
+    # concise_summary = generate_gpt_summary(combined_descriptions, final_array)
+    try:
+        concise_summary = generator.generate_description(combined_descriptions, final_array)
+       
+    except Exception as e:
+        print(e)
+        concise_summary = "An issue occurred with API call..\n"
+    # Print the concise scene description generated by GPT-3.5/4
+    print("\nConcise Scene Description Generated by GPT:\n", concise_summary)
 
     # Overlay boxes, scores, and shelf numbers
     output_dir = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/inference/"
