@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=all_serial
+#SBATCH --account=cvcs_2023_group23
 #SBATCH --time=00:02:00
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=1   # Number of tasks (GPUs) per node

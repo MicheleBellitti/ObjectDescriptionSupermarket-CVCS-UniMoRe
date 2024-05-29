@@ -303,48 +303,27 @@ def extract_clip_keywords(image, model, preprocess, top_k=1):
     with torch.no_grad():
         image_features = model.encode_image(image)
         image_features /= image_features.norm(dim=-1, keepdim=True)
-
-        potential_keywords = [
-            "apple", "banana", "orange", "lemon", "grapefruit", "lime", "cherries", "nectarine", "papaya", "pineapple",
-            "avocado", "grapes", "kiwi", "mango", "melon", "peach", "pear", "plum", "pomegranate", "watermelon",
-            "asparagus", "aubergine", "beetroot", "bell pepper", "broccoli", "brussels sprouts", "cabbage", "carrot", "cauliflower", "celery",
-            "cucumber", "garlic", "green beans", "kale", "leeks", "lettuce", "mushrooms", "onion", "peas", "potato",
-            "pumpkin", "radish", "spinach", "sweet corn", "sweet potato", "tomato", "zucchini", "squash", "turnip", "yam",
-            "milk", "yogurt", "butter",
-            "cheese", "ice cream", "sorbet", "cream",
-            "cola", "diet soda", "root beer", "ginger ale", "tonic water", "energy drink", "sports drink", "lemonade", "iced tea", "fruit punch",
-            "water", "coffee", "tea", "wine", "champagne", "beer", "vodka", "whiskey",
-            "rum", "gin", "tequila", "brandy", "liqueur", "cordial", "sake", "cider", "mead", "mocktails",
-            "chocolate bar", "candy", "gum", "mints", "jelly beans", "marshmallows", "lollipops", "toffee", "fudge", "hard candy",
-            "bread", "bagel", "croissant", "muffins", "pancakes", "waffles", "scones", "french toast", "baguette", "sourdough bread",
-            "rye bread", "cornbread", "biscuits", "rolls", "flatbread", "pita bread", "naan", "focaccia", "pizza dough", "tortillas",
-            "chicken breast", "chicken thighs", "ground beef", "steak", "pork chops", "bacon", "ham", "sausage", "turkey", "duck",
-            "salmon", "tuna", "trout", "cod", "shrimp", "lobster", "crab", "mussels", "oysters", "sardines",
-            "tofu", "tempeh", "seitan", "lentils", "chickpeas", "black beans", "kidney beans", "edamame", "peanuts", "almonds",
-            "cashews", "walnuts", "pistachios", "hazelnuts", "pecans", "sunflower seeds", "pumpkin seeds", "chia seeds", "flax seeds", "hemp seeds",
-            "rice", "quinoa", "barley", "bulgur", "farro", "couscous",
-            "pasta",
-            "tomato sauce", "pesto", "vinegar",
-            "olive oil", "oil",
-            "flour",
-            "sugar", "stevia", "xylitol",
-            "salt", "pepper", "chili powder", "paprika", "turmeric", "cumin",
-            "cinnamon", "nutmeg", "cloves", "allspice", "ginger", "vanilla extract", "almond extract", "lemon zest", "orange zest", "curry powder",
-            "chips", "pretzels", "popcorn", "nuts", "trail mix", "granola bars", "protein bars", "fruit snacks", "rice cakes", "crackers",
-            "cookies", "brownies", "cakes",
-            "frozen food",
-            "shampoo", "conditioner", "body wash", "bar soap", "hand soap", "toothpaste", "mouthwash", "deodorant", "shaving cream", "lotion",
-            "laundry detergent", "fabric softener", "bleach", "dish soap", "disinfectant", "glass cleaner", "floor cleaner", "furniture polish", "air freshener", "candles",
-            "paper towels", "toilet paper", "facial tissue", "napkins", "trash bags", "sandwich bags", "aluminum foil", "plastic wrap", "wax paper", "parchment paper",
-            "dog food", "cat food", "bird seed", "fish flakes", "pet treats", "pet toys", "leashes", "collars", "pet beds", "aquarium supplies",
-            "diapers", "baby wipes", "baby formula", "baby food", "pacifiers", "bottles", "teething rings", "baby lotion", "baby shampoo", "strollers",
-            "pain reliever", "cold medicine", "allergy medication", "antibiotic ointment", "band-aids", "first aid kit", "prescription pickup", "vitamins", "supplements", "sunscreen",
-            "condiments", "spices", "herbs", "canned goods", "pickles", "jams", "jellies", "nut butters", "olives", "sauerkraut",
-            "dried fruits", "beef jerky", "vegan snacks", "gluten-free products", "lactose-free products", "organic products", "non-GMO products", "energy bars", "dietary supplements", "protein powders",
-            "baking supplies", "cake decorating supplies", "seasonal goods", "holiday decorations", "party supplies", "greeting cards", "stationery", "craft supplies", "school supplies", "office supplies",
-            "magazines", "newspapers", "books", "DVDs", "gift cards", "lottery tickets", "prepaid phone cards", "electronic accessories", "batteries", "light bulbs"
-        ]
         
+        potential_keywords = [
+        "fruit", "apple", "banana", "orange", "lemon", "pineapple", "avocado", "grapes", "kiwi", "mango", "peach", "pear", "watermelon",
+        "vegetable", "asparagus", "beetroot", "bell pepper", "broccoli", "carrot", "cauliflower", "celery", "cucumber", "garlic", "kale", "lettuce", "mushroom", "onion", "potato", "spinach", "tomato", "zucchini",
+        "dairy", "milk", "yogurt", "butter", "cheese", "ice cream",
+        "beverages", "water", "coffee", "tea", "wine", "beer", "soda", "juice",
+        "meat", "chicken breast", "ground beef", "steak", "pork chops", "bacon", "sausage", "salmon", "tuna", "shrimp", "crab",
+        "rice", "quinoa", "barley", "pasta", "bread", "tortillas",
+        "tomato sauce", "pickles", "olives", "jam", "peanut butter",
+        "chips", "pretzels", "popcorn", "nuts", "granola bars", "cookies", "crackers",
+        "frozen vegetables", "frozen meals", "frozen desserts",
+        "flour", "sugar", "salt", "baking powder", "cinnamon", "nutmeg", "vanilla extract",
+        "ketchup", "mustard", "mayonnaise", "vinegar", "olive oil",
+        "laundry detergent", "dish soap", "paper towels", "toilet paper", "trash bags",
+        "shampoo", "conditioner", "body wash", "toothpaste", "deodorant",
+        "dog food", "cat food", "pet treats",
+        "diapers", "baby wipes", "baby formula",
+        "pain reliever", "medicine", "vitamins", "band-aids",
+        "greeting cards", "batteries", "light bulbs"
+        ]
+
         text_tokens = clip.tokenize(potential_keywords).to(Config.DEVICE)
         text_features = model.encode_text(text_tokens)
         text_features /= text_features.norm(dim=-1, keepdim=True)
@@ -383,26 +362,6 @@ def describe_spatial_relationships(final_array):
         spatial_descriptions[item['product_id']] = '; '.join(descriptions)
     return spatial_descriptions
 
-def generate_gpt_summary(descriptions, final_array):
-    client = OpenAI()
-    # Create a prompt with the descriptions to instruct GPT-4
-    prompt = "Summarize the following spatial relationships into a concise scene description:\n\n" + str(''.join(final_array))
-
-    # Make an API call to OpenAI
-    response = client.completions.create(
-            model="gpt-3.5-turbo-instruct",
-            prompt=prompt,
-            temperature=0.7,
-            max_tokens=6000,  # you can adjust this to be longer or shorter as needed
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-
-    # Extract and return the summary from the response
-    summary = response.choices[0].text.strip()
-    return summary
-
 def overlay(image_path, final_array, output_dir, font_size=10):
     """
     Overlays bounding boxes, scores, shelf numbers, and product IDs on the image and saves it,
@@ -427,9 +386,13 @@ def overlay(image_path, final_array, output_dir, font_size=10):
         draw.rectangle([x1, y1, x2, y2], outline="red", width=10)
         # Prepare the text to overlay
         # overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name')} \nDenseNet: {entry.get('densenet_confidence', 0):.2f} \n{entry.get('color')} \n{clip_keywords_str}"
-        overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \nName: {entry.get('product_name') }\n{entry.get('color')} \n{clip_keywords_str}"
+        # overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \n{entry.get('color')} \n{clip_keywords_str}"
+        overlay_text = f"ID: {entry['product_id']} \nFRCNN: {entry.get('frcnn_confidence', 0):.2f} \nShelf: {entry['shelf_number']} \n{clip_keywords_str}"
         # Measure text size to center it
-        text_width, text_height = draw.textsize(overlay_text, font=font)
+        text_width, text_height = 0, 0
+        for overlay_text_line in overlay_text.split('\n'):
+            text_width += draw.textlength(overlay_text_line, font=font)
+            text_height += font.size
         # Calculate the center position
         text_x = x1 + (x2 - x1 - text_width) / 2
         text_y = y1 + (y2 - y1 - text_height) / 2
@@ -526,11 +489,11 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
         product_id_counter += 1
     
     
-    # Load the trained model
-    densenet_model = LitModel.load_from_checkpoint(densenet_checkpoint_path)
-    densenet_model.eval()
-    densenet_model.to(Config.DEVICE)  # Assuming you're using the Config class from your object detection code
-    print("DenseNet loaded correctly")
+    # # Load the trained model
+    # densenet_model = LitModel.load_from_checkpoint(densenet_checkpoint_path)
+    # densenet_model.eval()
+    # densenet_model.to(Config.DEVICE)  # Assuming you're using the Config class from your object detection code
+    # print("DenseNet loaded correctly")
 
     # Define test dataset and loader
     test_transform = transforms.Compose([
@@ -544,50 +507,51 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
     clip_model, clip_preprocess = clip.load('ViT-B/32', device=Config.DEVICE)
     print("CLIP loaded correctly")
 
-    print("Looping through BBox: Color Detection, DenseNet121 Classifier & CLIP Zero Shot")
+    #print("Looping through BBox: Color Detection, DenseNet121 Classifier & CLIP Zero Shot")
+    print("Looping through BBox: CLIP Zero Shot")
     for i, bbox in enumerate(bboxes):
         x1, y1, x2, y2 = map(int, bbox)  # Convert bbox coordinates to integers
         crop = scene_image_eq.crop((x1, y1, x2, y2))  # Crop using PIL
         
-        # Convert bbox coordinates to integers
-        x1, y1, x2, y2 = map(int, bbox)
-        # Calculate the midpoints of the bounding box
-        mid_x = (x1 + x2) // 2
-        mid_y = (y1 + y2) // 2
-        # Determine the size of the middle box you want to crop
-        # This will crop a box of size (box_width x box_height) centered at the midpoint
-        box_width = (x2 - x1) * 0.85
-        box_height = (y2 - y1) * 0.85
-        # Calculate the coordinates of the middle box
-        middle_box_x1 = max(x1, mid_x - box_width // 2)
-        middle_box_y1 = max(y1, mid_y - box_height // 2)
-        middle_box_x2 = min(x2, mid_x + box_width // 2)
-        middle_box_y2 = min(y2, mid_y + box_height // 2)
-        # Crop the middle box using PIL
-        middle_crop = scene_image_eq.crop((middle_box_x1, middle_box_y1, middle_box_x2, middle_box_y2)) 
-        # Get the most frequent color from the cropped image
-        dominant_color = spatial_rgb_color_clustering(middle_crop, n_clusters=3)
-        # Ensure dominant_color is formatted correctly (should already be, based on Step 1)
-        if not isinstance(dominant_color, tuple) or len(dominant_color) != 3:
-            raise ValueError("Dominant color must be a tuple of 3 elements.")
-        # Now call closest_color with the correctly formatted dominant_color
-        closest_color_name = closest_color(dominant_color)
+        # # Convert bbox coordinates to integers
+        # x1, y1, x2, y2 = map(int, bbox)
+        # # Calculate the midpoints of the bounding box
+        # mid_x = (x1 + x2) // 2
+        # mid_y = (y1 + y2) // 2
+        # # Determine the size of the middle box you want to crop
+        # # This will crop a box of size (box_width x box_height) centered at the midpoint
+        # box_width = (x2 - x1) * 0.85
+        # box_height = (y2 - y1) * 0.85
+        # # Calculate the coordinates of the middle box
+        # middle_box_x1 = max(x1, mid_x - box_width // 2)
+        # middle_box_y1 = max(y1, mid_y - box_height // 2)
+        # middle_box_x2 = min(x2, mid_x + box_width // 2)
+        # middle_box_y2 = min(y2, mid_y + box_height // 2)
+        # # Crop the middle box using PIL
+        # middle_crop = scene_image_eq.crop((middle_box_x1, middle_box_y1, middle_box_x2, middle_box_y2)) 
+        # # Get the most frequent color from the cropped image
+        # dominant_color = spatial_rgb_color_clustering(middle_crop, n_clusters=3)
+        # # Ensure dominant_color is formatted correctly (should already be, based on Step 1)
+        # if not isinstance(dominant_color, tuple) or len(dominant_color) != 3:
+        #     raise ValueError("Dominant color must be a tuple of 3 elements.")
+        # # Now call closest_color with the correctly formatted dominant_color
+        # closest_color_name = closest_color(dominant_color)
 
-        # Prepare crop for DenseNet121 inference
-        transform = transforms.Compose([
-            transforms.Resize((224, 224)),  # Resize to match DenseNet121 input
-            transforms.ToTensor(),
-        ])
-        crop_tensor = transform(crop).unsqueeze(0).to(Config.DEVICE)  # Add batch dimension and move to device
-        # DenseNet121 inference for class name with confidence
-        with torch.no_grad():
-            output = densenet_model(crop_tensor)
-            probabilities = torch.nn.functional.softmax(output, dim=1)
-            _, predicted = torch.max(output, 1)  # Using raw output for prediction as before
-            predicted_class_name = grocery_test_dataset.idx_to_class[str(predicted.item())]
+        # # Prepare crop for DenseNet121 inference
+        # transform = transforms.Compose([
+        #     transforms.Resize((224, 224)),  # Resize to match DenseNet121 input
+        #     transforms.ToTensor(),
+        # ])
+        # crop_tensor = transform(crop).unsqueeze(0).to(Config.DEVICE)  # Add batch dimension and move to device
+        # # DenseNet121 inference for class name with confidence
+        # with torch.no_grad():
+        #     output = densenet_model(crop_tensor)
+        #     probabilities = torch.nn.functional.softmax(output, dim=1)
+        #     _, predicted = torch.max(output, 1)  # Using raw output for prediction as before
+        #     predicted_class_name = grocery_test_dataset.idx_to_class[str(predicted.item())]
 
-            # Now, extracting confidence from probabilities using the predicted class index
-            confidence = probabilities[0, predicted.item()].item()
+        #     # Now, extracting confidence from probabilities using the predicted class index
+        #     confidence = probabilities[0, predicted.item()].item()
         
         # Crop the image for CLIP keyword extraction
         crop_for_clip = scene_image_eq.crop((x1, y1, x2, y2))
@@ -596,9 +560,11 @@ def main(scene_image_path, frcnn_checkpoint_path, densenet_checkpoint_path):
         clip_keywords = extract_clip_keywords(crop_for_clip, clip_model, clip_preprocess, top_k=1)
 
         # Update the final_array entry for this detection with classifier information
-        final_array[i]['product_name'] = predicted_class_name
+        #final_array[i]['product_name'] = predicted_class_name
+        final_array[i]['product_name'] = "None"
         # final_array[i]['densenet_confidence'] = confidence
-        final_array[i]['color'] = closest_color_name
+        #final_array[i]['color'] = closest_color_name
+        final_array[i]['color'] = "None"
         final_array[i]['clip_keywords'] = clip_keywords
 
     print("Colors and Products Identified\n")

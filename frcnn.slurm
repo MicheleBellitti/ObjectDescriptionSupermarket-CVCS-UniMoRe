@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=all_usr_prod
-#SBATCH --account=ai4bio2023
+#SBATCH --account=cvcs_2023_group23
 #SBATCH --time=03:00:00
 #SBATCH --gres=gpu:4
 #SBATCH --ntasks-per-node=4   # Number of tasks (GPUs) per node
@@ -29,6 +29,7 @@ else
     --master_port=12346 \
     train.py --config config.yaml --log_dir logs --model frcnn --verbose
 fi
+
 # Test
 
 python -u -m torch.distributed.run \

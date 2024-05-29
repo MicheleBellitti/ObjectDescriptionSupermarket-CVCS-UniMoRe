@@ -2,18 +2,24 @@ import os
 import numpy as np
 import torch
 import torch.nn as nn
+import torchvision
 from torchvision import models, transforms
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor, FasterRCNN_ResNet50_FPN_V2_Weights, fasterrcnn_resnet50_fpn_v2, fasterrcnn_resnet50_fpn, FasterRCNN_ResNet50_FPN_Weights
+from torchvision.models.detection import _utils as det_utils
+from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from PIL import Image
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import mahalanobis, euclidean
 from matplotlib import pyplot as plt
 from datasets import FreiburgDataset
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
 import random
 
 NUM_TEST_IMAGES = 2939
 
-image_path = "/work/cvcs_2023_group23/SKU110K_fixed/images/test_{random.randint(NUM_TEST_IMAGES)}.jpg"  # Update this path
+image_path = f"/work/cvcs_2023_group23/SKU110K_fixed/images/test_{random.randint(0,NUM_TEST_IMAGES)}.jpg"  # Random Scene Image
 
 # Configuration settings for the image retrieval system
 class Config:
@@ -62,7 +68,7 @@ class DataProcessor:
         self.config = config
         self.model = model
 
-    def extract_embeddings_from_bboxes(self, image_input, bboxes):
+    def extract_embeddings_from_bboxes(self, t, image_input, bboxes):
         """
         Extract embeddings for each bounding box in the image.
 
@@ -98,6 +104,16 @@ class DataProcessor:
             embedding = self.model(image_tensor)
             embeddings.append(embedding.cpu().numpy())
       return embeddings
+    @staticmethod
+    def _crop_image(image, bbox):
+        """
+        Crop the image to the bounding box.
+
+        :param image: A PIL Image.
+        :param bbox: A bounding box defined by [x1, y1, x2, y2].
+        :return: Cropped PIL Image.
+        """
+        return image.crop(bbox)
   
 
 class Visualizer:
@@ -145,19 +161,30 @@ def compute_euclidean_distances(query_embedding, embeddings):
 def main(image_path):
     config = Config()
     # Load object detector for inference
-    detector_weights = torchvision.models.detection.FasterRCNN_ResNet50_FPN_Weights.DEFAULT
-    detector = torchvision.models.detection.fasterrcnn_resnet50_fpn(
-            weights=weights)
-    in_features = model.roi_heads.box_predictor.cls_score.in_features
-    detector.roi_heads.box_predictor = FastRCNNPredictor(
-            in_features, num_classes)
+    detector = fasterrcnn_resnet50_fpn(pretrained=True)
+    in_features = detector.roi_heads.box_predictor.cls_score.in_features
+    detector.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
     # Load weights
-    checkpoint = torch.load(args.resume_checkpoint)
+    #frcnn_checkpoint_path = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/frcnn/checkpoint_230224_AdaBelief_Transforms_100epochs.pth"
+    frcnn_checkpoint_path = "/work/cvcs_2023_group23/ObjectDescriptionSupermarket-CVCS-UniMoRe/checkpoints/frcnn/checkpoint_230324_AdaBelief_Transforms_75epochs.pth"
+    checkpoint = torch.load(frcnn_checkpoint_path)
+    
+    # Setting up distributed processing
+    torch.cuda.empty_cache()
+    local_rank = int(os.environ.get("LOCAL_RANK"))
+    torch.cuda.set_device(local_rank)
+    torch.distributed.init_process_group(backend="nccl")
+    
+    detector = detector.to(local_rank)
+    detector = DDP(detector, device_ids=[local_rank], output_device=local_rank)
     detector.load_state_dict(checkpoint["model_state_dict"])
-    detector.to(config.DEVICE)
     detector.eval() # inference mode
     
-    # Load embdedding model
+    print("FRCNN loaded correctly")
+    # detector transform
+    detector_transform = transforms.Compose([transforms.Resize((1024, 1024)), transforms.ToTensor()])
+    
+    # Load embedding model
     model_handler = ModelHandler(config)
     embedding_model = model_handler.get_embedding_model()
     dp = DataProcessor(config, embedding_model)
@@ -165,19 +192,25 @@ def main(image_path):
                            transforms.Resize((256, 256)),
                            transforms.ToTensor()]), data_dir=config.DATA_DIR)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=config.BATCH_SIZE, shuffle=False)
-    # embeddings = extract_embeddings(dataloader, embedding_model)
+    embeddings = extract_embeddings(dataloader, embedding_model)
     
     # Inference on FRCNN
     query_image = Image.open(image_path).convert('RGB')
-    query_image = transforms.functional.to_tensor(query_image).unsqueeze(0).to(config.DEVICE)
-    bboxes = detector(query_image)
+    query_image_tensor = transforms.functional.to_tensor(query_image).unsqueeze(0).to(config.DEVICE)
+    output = detector(query_image_tensor)[0]
+    bboxes = output["boxes"].cpu().detach().numpy()
     
-    embeddings = dp.
-    #pca_embeddings, pca = apply_pca(embeddings)
-    pca_embeddings = embeddings   
+    # embeddings = dp.extract_embeddings_from_bboxes(detector_transform, query_image, bboxes)
+    # pca_embeddings, pca = apply_pca(embeddings)
+    print("Embeddings obtained..", len(embeddings))
+    pca_embeddings = np.array(embeddings) #No PCA 
     
     query_transform = transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor()])
-    query_vector = query_transform(query_image).unsqueeze(0).to(config.DEVICE)
+    # random bbox from query image
+    random_box = bboxes[random.randint(0, bboxes.shape[0])]
+    
+    input_image = DataProcessor._crop_image(query_image, random_box)
+    query_vector = query_transform(input_image).unsqueeze(0).to(config.DEVICE)
     query_embedding = embedding_model(query_vector).detach().cpu().numpy()
     #query_embedding_pca = pca.transform(query_embedding)  # Apply PCA to the query embedding if using PCA embeddings
     query_embedding_pca = query_embedding
@@ -192,6 +225,8 @@ def main(image_path):
     print(min(euclidean_distances))
     print("Min mahalanobis_distances:")
     print(min(mahalanobis_distances))
+    
+    Visualizer.save_images([input_image], ["query_box"], prefix="input", directory="retrieval_files/results")
 
     for distance_name, distances in zip(["cosine", "mahalanobis", "euclidean"], 
                                         [cosine_scores, mahalanobis_distances, euclidean_distances]):
@@ -199,9 +234,10 @@ def main(image_path):
             top_indices = np.argsort(distances)[-5:]  # For cosine similarity, higher scores are better
         else:
             top_indices = np.argsort(distances)[:5]  # For other distances, lower scores are better
-        top_images = [dataset[idx][0] for idx in top_indices]
+        top_images = [DataProcessor._crop_image(query_image, bboxes[top_i]) for top_i in top_indices]
         titles = [f"{distance_name.capitalize()} Top {i+1}" for i in range(5)]
+        
         Visualizer.save_images(top_images, titles, prefix=distance_name, directory="retrival_files/results/")
 
 if __name__ == "__main__":
-    main()
+    main(image_path)

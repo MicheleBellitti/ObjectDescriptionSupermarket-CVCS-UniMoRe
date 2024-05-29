@@ -867,4 +867,4 @@ number of True positives: 7407!
  Evaluation ended correctly! 
 
 
-
+mAP = 0.572

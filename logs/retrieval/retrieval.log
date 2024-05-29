@@ -1,0 +1,20 @@
+True
+cuda
+True
+cuda
+FRCNN loaded correclty
+FRCNN loaded correclty
+Embeddings obtained.. 100
+Embeddings obtained.. 100
+Max Cosine Score:
+0.69519174
+Min euclidean_distances:
+15.345312118530273
+Min mahalanobis_distances:
+nan
+Max Cosine Score:
+0.830745
+Min euclidean_distances:
+9.737959861755371
+Min mahalanobis_distances:
+498586316.1048471
