@@ -1,6 +1,4 @@
 vscode/
 __pycache__/
-pytest_cache/
+.pytest_cache/
 checkpoints/
-freiburg/
-train_results/clf_densenet121/*.jpg
