@@ -1,6 +1,6 @@
 # Object Detection and Scene Description in a Supermarket
 
-This course project for [Computer Vision and Cognitive System](https://offertaformativa.unimore.it/corso/insegnamento?cds_cod=20-262&aa_ord_id=2021&pds_cod=20-262-6&aa_off_id=2022&lang=eng&ad_cod=IIM-65&aa_corso=1&fac_id=10005&coorte=2022&anno_corrente=2022&durata=2) taught at [DIEF, UniMoRe](https://inginf.unimore.it/laurea-magistrale-ing-inf/).
+This is the course project for [Computer Vision and Cognitive System](https://offertaformativa.unimore.it/corso/insegnamento?cds_cod=20-262&aa_ord_id=2021&pds_cod=20-262-6&aa_off_id=2022&lang=eng&ad_cod=IIM-65&aa_corso=1&fac_id=10005&coorte=2022&anno_corrente=2022&durata=2) taught at [DIEF, UniMoRe](https://inginf.unimore.it/laurea-magistrale-ing-inf/).
 - Course Project Report: [https://www.overleaf.com/read/mkmstpgmgphq#9e596f](https://www.overleaf.com/read/mkmstpgmgphq#9e596f)
 - Model Weights: [https://drive.google.com/drive/folders/1QY-fAs8u-BdupzJeAMYeGz4cKXeUWnnR?usp=drive_link](https://drive.google.com/drive/folders/1QY-fAs8u-BdupzJeAMYeGz4cKXeUWnnR?usp=drive_link)
 
@@ -41,7 +41,7 @@ sbatch inference.slurm
 
 ### Retrieval Mechanism
 
-Experiments were initially conducted using _Google Colab_: [https://colab.research.google.com/drive/1HXn3XRod3_6CHOes7aB0bJltz-IJagRP?usp=sharing](https://colab.research.google.com/drive/1HXn3XRod3_6CHOes7aB0bJltz-IJagRP?usp=sharing)
+Retrieval was initially experimented using _Google Colab_: [https://colab.research.google.com/drive/1HXn3XRod3_6CHOes7aB0bJltz-IJagRP?usp=sharing](https://colab.research.google.com/drive/1HXn3XRod3_6CHOes7aB0bJltz-IJagRP?usp=sharing)
 
 ```bash
 sbatch retrival.slurm
