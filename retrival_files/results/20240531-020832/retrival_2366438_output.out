@@ -1,0 +1,7 @@
+Selected scene image: /work/cvcs_2023_group23/SKU110K_fixed/images/train_8189.jpg
+Selected query image: retrival_files/images/shampoo_green.png
+FRCNN loaded correctly
+BBoxes obtained from scene image:  100
+Embeddings obtained for scene image:  100
+Results saved in directory: retrival_files/results/20240531-020832
+Combined image saved at: retrival_files/results/20240531-020832/combined_results.png

@@ -1,0 +1,7 @@
+Selected scene image: retrival_files/input_scene/train_825.jpg
+Selected query image: retrival_files/input_query/shampoo_green.png
+FRCNN loaded correctly
+BBoxes obtained from scene image:  100
+Embeddings obtained for scene image:  100
+Results saved in directory: retrival_files/results/20240531-021017
+Combined image saved at: retrival_files/results/20240531-021017/combined_results.png

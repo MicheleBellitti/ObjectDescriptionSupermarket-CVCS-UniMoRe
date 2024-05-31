@@ -40,6 +40,9 @@ sbatch inference.slurm
 ![pipeline](https://github.com/MicheleBellitti/ObjectDescriptionSupermarket-CVCS-UniMoRe/assets/41593068/3a1fb28d-157c-4d4b-821c-5a86a01682ae)
 
 ### Retrieval Mechanism
+
+Experiments were initially conducted using _Google Colab_: [https://colab.research.google.com/drive/1HXn3XRod3_6CHOes7aB0bJltz-IJagRP?usp=sharing](https://colab.research.google.com/drive/1HXn3XRod3_6CHOes7aB0bJltz-IJagRP?usp=sharing)
+
 ```bash
 sbatch retrival.slurm
 ```
