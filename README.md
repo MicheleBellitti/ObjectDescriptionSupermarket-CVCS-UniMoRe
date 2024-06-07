@@ -1,7 +1,9 @@
 # Object Detection and Scene Description in a Supermarket
 
-This is the course project for [Computer Vision and Cognitive System](https://offertaformativa.unimore.it/corso/insegnamento?cds_cod=20-262&aa_ord_id=2021&pds_cod=20-262-6&aa_off_id=2022&lang=eng&ad_cod=IIM-65&aa_corso=1&fac_id=10005&coorte=2022&anno_corrente=2022&durata=2) taught at [DIEF, UniMoRe](https://inginf.unimore.it/laurea-magistrale-ing-inf/).
-- Course Project Report: [https://www.overleaf.com/read/mkmstpgmgphq#9e596f](https://www.overleaf.com/read/mkmstpgmgphq#9e596f)
+This is a course project for the postgraduate level course of [Computer Vision and Cognitive System](https://unimore.coursecatalogue.cineca.it/insegnamenti/2022/26380/2021/10003/10300?coorte=2022&schemaid=20024) taught at [DIEF, UniMoRe](https://inginf.unimore.it/laurea-magistrale-ing-inf/).
+
+- Project Presentation: [https://docs.google.com/presentation/d/1oa5Y8bHkKgFodULnyd5vInzbxH9hIJZVeqW5iYaaxxA/edit?usp=sharing](https://docs.google.com/presentation/d/1oa5Y8bHkKgFodULnyd5vInzbxH9hIJZVeqW5iYaaxxA/edit?usp=sharing)
+- Project Report: [https://drive.google.com/file/d/1YyxH2Q-KSBpQzCXXfHmBY9ajPjs3Un1R/view](https://drive.google.com/file/d/1YyxH2Q-KSBpQzCXXfHmBY9ajPjs3Un1R/view)
 - Model Weights: [https://drive.google.com/drive/folders/1QY-fAs8u-BdupzJeAMYeGz4cKXeUWnnR?usp=drive_link](https://drive.google.com/drive/folders/1QY-fAs8u-BdupzJeAMYeGz4cKXeUWnnR?usp=drive_link)
 
 ## Datasets
